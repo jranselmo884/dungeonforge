@@ -97,20 +97,56 @@ grep -rn "playerStartingHp\|60\|new Random(" src/main/java/dungeonforge/core
 
 **Paste the output. AC2 wants zero hardcoded literals outside the config class:**
 
-```
-
+```bash
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ grep -rn "playerStartingHp\|60\|new Random(" src/main/java/dungeonforge/core
+src/main/java/dungeonforge/core/Room.java:15:    private final Random rng = new Random();
+src/main/java/dungeonforge/core/GameWorld.java:21:    private final Random random = new Random();
+src/main/java/dungeonforge/core/Monster.java:16:    private static final Random RNG = new Random();
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ 
 ```
 
 **Change `playerStartingHp` in `config.json` to 200, run, and paste the player line:**
 
-```
+```bash
+=========================================
+        D U N G E O N F O R G E
+  A Head First Design Patterns project
+=========================================
+  version 0.2.0
 
+Delver  HP 200/200  ATK 10  DEF 3  Gold 0  XP 0  Carry 60.0kg
+
+-- Level 1 --
+L1R0: Skeleton (18/18 HP, ATK 5)  Crypt Rat (16/16 HP, ATK 6)
+L1R1: Bone Priest (16/16 HP, ATK 4)
+L1R2: Wight (14/14 HP, ATK 5)
+L1R3: Skeleton (14/14 HP, ATK 6)  Wight (17/17 HP, ATK 5)
+L1R4: Bone Priest (15/15 HP, ATK 5)
+L1R5: (empty)
+L1R6: (empty)
+L1R7: Bone Priest (18/18 HP, ATK 6)  Bone Priest (16/16 HP, ATK 6)
 ```
 
 **Rename `config.json` to `config.json.bak`, run again, and paste what happens (AC4):**
 
-```
+```bash
+=========================================
+        D U N G E O N F O R G E
+  A Head First Design Patterns project
+=========================================
+  version 0.2.0
 
+Delver  HP 80/80  ATK 8  DEF 2  Gold 0  XP 0  Carry 60.0kg
+
+-- Level 1 --
+L1R0: Bone Priest (18/18 HP, ATK 5)
+L1R1: (empty)
+L1R2: Skeleton (15/15 HP, ATK 6)  Skeleton (16/16 HP, ATK 5)
+L1R3: Crypt Rat (18/18 HP, ATK 5)  Crypt Rat (16/16 HP, ATK 6)
+L1R4: (empty)
+L1R5: Skeleton (16/16 HP, ATK 5)
+L1R6: Bone Priest (18/18 HP, ATK 5)  Skeleton (15/15 HP, ATK 6)
+L1R7: Wight (17/17 HP, ATK 6)
 ```
 
 ## 3. AFTER — US-1.2, the same seed produces the same dungeon
