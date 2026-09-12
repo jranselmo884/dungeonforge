@@ -23,30 +23,30 @@ you built them this week. Your job is to defend the other six answers.
 
 | # | Class | What it does | Singleton? | Would a 2nd instance be a bug, or just unusual? Why? |
 |---|---|---|---|---|
-| 1 | `GameConfig` | Holds every tunable setting | | |
-| 2 | `RandomSource` | The one seeded RNG | | |
-| 3 | `Player` | The player character | | |
-| 4 | `MonsterFactory` (Wk 4) | Turns blueprints into monsters | | |
-| 5 | `EventBus` (Wk 5) | Publishes game events to subscribers | | |
-| 6 | `CommandHistory` (Wk 7) | The undo stack | | |
-| 7 | `SaveSystemFacade` (Wk 12) | Reads and writes save files | | |
-| 8 | `Logger` | Writes diagnostic output to a file | | |
+| 1 | `GameConfig` | Holds every tunable setting | x| |
+| 2 | `RandomSource` | The one seeded RNG | x| |
+| 3 | `Player` | The player character | | x|
+| 4 | `MonsterFactory` (Wk 4) | Turns blueprints into monsters | | x|
+| 5 | `EventBus` (Wk 5) | Publishes game events to subscribers | ?| ?|
+| 6 | `CommandHistory` (Wk 7) | The undo stack | |x |
+| 7 | `SaveSystemFacade` (Wk 12) | Reads and writes save files | | x|
+| 8 | `Logger` | Writes diagnostic output to a file | ?| ?|
 
 ## The three that will cause arguments
 
 Rows 5, 7 and 8 are the interesting ones, and reasonable engineers disagree about all three.
 Pick **one** of them and write a paragraph:
 
-**Which one:** ______
+**Which one:** _SaveSystemFacade_
 
 **The case FOR making it a Singleton:**
-
+My case for making this a singleton even with file locking is when a save system involves something like cloud saves which rely on a timestamp. I have seen many issues with cloud saves or even just mismatching times on local machines. Which then when adding the cloud to the mix and multiple people pinging the saves around the same time would cause issues. I firmly believe that a save program should just have one instance to run to prevent data loss or overwritten data.
 
 **The case AGAINST:**
-
+My case against making this a singleton is that while the above is true, checks and prompts before any data is overwritten goes a long way to making the user aware of what is going to be changed. A more permanent solution could be creating a log of any previous save data and keeping them in hidden in case of accidental save conflicts one can go back to the save they meant to work on. Similar to "git reflog" which keeps a master log of all changes that can be restored. 
 
 **What you would actually do in this project, and why:**
-
+I would personally use a combination of file locking and client side confirmation, especially paying detail to making sure timestamps from UTC are displayed. I would definitely make a log of all saves whether deleted of not to recover any lost data, and make accessible to the client.
 
 > There is no answer key for this paragraph. You are graded on whether you engaged with the
 > tension, not on which side you landed.
@@ -57,5 +57,5 @@ Your `GameConfig` has a method called `resetForTests()`. It exists only so that 
 undo the global state that the Singleton created.
 
 **In one or two sentences: what is that method telling you about the pattern?**
-
+This method tells me that when using a singleton you must "reset" the state of the instance the singleton created if you wish to make unit tests for CI. Becasue of the way a singleton creates a single and global state the instance must be cleared to test and after the test is done. 
 
