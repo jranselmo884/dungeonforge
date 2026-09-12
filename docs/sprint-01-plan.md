@@ -62,14 +62,14 @@ remembering the next time your own sprint doesn't fit.
 
 | Story | Estimated | Actual hours | High, low, or about right? |
 |---|---|---|---|
-| US-1.1 | 3 | | |
-| US-1.2 | 3 | | |
-| US-1.3 | 2 | | |
+| US-1.1 | 3 | 2.5|about right |
+| US-1.2 | 3 | 2|low |
+| US-1.3 | 2 | 2|low |
 
-**Points completed:** ____ · **Sprint 0 velocity for comparison:** ____
+**Points completed:** _8_ · **Sprint 0 velocity for comparison:** ____
 
 ## Sprint Review — one sentence
 
 > What can the project do now that it could not do last week?
-
+The project now can load the config values from config.json and will default to hardcoded values in the singletons. It also allows for a seed value to be read from the config.json which lets us choose the seed to monitor intended behavoir without randomness from the previous implementation. 
 
