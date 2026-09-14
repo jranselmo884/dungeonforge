@@ -1,0 +1,131 @@
+classDiagram
+    namespace dungeonforge {
+        class Main {
+            +String VERSION$
+            -Main()
+            +banner()$ String
+            +main(String[] args)$ void
+        }
+    }
+
+    namespace dungeonforge_config {
+        class GameConfig {
+            -GameConfig instance$
+            -Map~String, Object~ settings
+            -GameConfig()
+            +getInstance()$ GameConfig
+            -loadDefaults() void
+            -loadFromClassPath(String resourceName) void
+            +getInt(String key) int
+            +getDouble(String key) double
+            +getSeed() long
+        }
+
+        class Json {
+            -String s
+            -int i
+            -Json(String s)
+            +parseObject(String text)$ Map~String, Object~
+            -ws() void
+            -value() Object
+            -object() Map~String, Object~
+            -array() List~Object~
+            -string() String
+            -number() Double
+        }
+    }
+
+    namespace dungeonforge_core {
+        class Entity {
+            <>
+            #String name
+            #int hp
+            #int maxHp
+            #int attackPower
+            #int defense
+            #Entity(String name, int maxHp, int attackPower, int defense)
+            +getName() String
+            +getHp() int
+            +getMaxHp() int
+            +getAttackPower() int
+            +getDefense() int
+            +isAlive() boolean
+            +takeDamage(int amount) void
+            +heal(int amount) void
+            +describe()* String
+            +toString() String
+        }
+
+        class Player {
+            -int gold
+            -int xp
+            +Player(String name)
+            +getGold() int
+            +getXp() int
+            +addGold(int g) void
+            +addXp(int x) void
+            +carryCapacity() double
+            +describe() String
+        }
+
+        class Monster {
+            -Random RNG$
+            -String species
+            -int xpReward
+            +Monster(String species, int baseHp, int baseAttack, int xpReward)
+            +getSpecies() String
+            +getXpReward() int
+            +describe() String
+        }
+
+        class Room {
+            -Random rng
+            -String[] FLAVORS$
+            -String id
+            -String flavor
+            -List~Monster~ monsters
+            +Room(String id)
+            +getId() String
+            +getFlavor() String
+            +getMonsters() List~Monster~
+            +addMonster(Monster m) void
+        }
+
+        class DungeonLevel {
+            -int depth
+            -List~Room~ rooms
+            +DungeonLevel(int depth)
+            +getDepth() int
+            +getRooms() List~Room~
+            +addRoom(Room r) void
+        }
+
+        class GameWorld {
+            -Random random
+            -Player player
+            -List~DungeonLevel~ levels
+            +GameWorld(Player player)
+            -generate() void
+            -spawn(int depth) Monster
+            +getPlayer() Player
+            +getLevels() List~DungeonLevel~
+            +totalMonsters() int
+        }
+    }
+
+%% Inheritance
+    Entity <|-- Player
+    Entity <|-- Monster
+
+%% Structural Aggregations & Composition
+    GameWorld "1" *-- "1" Player : has
+    GameWorld "1" *-- "*" DungeonLevel : contains
+    DungeonLevel "1" *-- "*" Room : contains
+    Room "1" *-- "*" Monster : contains
+
+%% Direct Dependencies / Usage
+    Main ..> GameWorld : instantiates
+    Main ..> Player : instantiates
+    Player ..> GameConfig : retrieves config
+    GameWorld ..> GameConfig : retrieves config
+    GameConfig ..> Json : parses JSON
