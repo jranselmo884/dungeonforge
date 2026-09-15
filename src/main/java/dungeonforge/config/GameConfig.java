@@ -10,7 +10,7 @@ import java.util.Map;
 
 public final class GameConfig {
 
-    private static GameConfig instance;
+    private static final GameConfig instance = new GameConfig();
     private final Map<String, Object> settings = new LinkedHashMap<>();
 
     private GameConfig() {
@@ -18,10 +18,10 @@ public final class GameConfig {
         loadFromClassPath("config.json");
     }
 
-    public static synchronized GameConfig getInstance() {
-        if (instance == null) {
-            instance = new GameConfig();
-        }
+    public static GameConfig getInstance() {
+//        if (instance == null) {
+//            instance = new GameConfig();
+//        }
         return instance;
     }
     private void loadDefaults() {
