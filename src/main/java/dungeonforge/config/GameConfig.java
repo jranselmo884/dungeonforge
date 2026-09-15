@@ -19,11 +19,9 @@ public final class GameConfig {
     }
 
     public static GameConfig getInstance() {
-//        if (instance == null) {
-//            instance = new GameConfig();
-//        }
         return instance;
     }
+
     private void loadDefaults() {
         settings.put("playerStartingHP", 80.0);
         settings.put("playerStartingAttack", 8.0);
