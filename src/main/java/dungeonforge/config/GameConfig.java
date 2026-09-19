@@ -10,7 +10,7 @@ import java.util.Map;
 
 public final class GameConfig {
 
-    private static final GameConfig instance = new GameConfig();
+    private static GameConfig instance = new GameConfig();
     private final Map<String, Object> settings = new LinkedHashMap<>();
 
     private GameConfig() {
