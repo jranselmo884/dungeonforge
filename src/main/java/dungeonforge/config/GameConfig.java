@@ -22,7 +22,7 @@ public final class GameConfig {
     }
 
     private void loadDefaults() {
-        settings.put("playerStartingHP", 80.0);
+        settings.put("playerStartingHp", 80.0);
         settings.put("playerStartingAttack", 8.0);
         settings.put("playerStartingDefense", 2.0);
         settings.put("CarryCapacity", 60.0);
