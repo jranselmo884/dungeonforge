@@ -9,17 +9,21 @@ import java.util.Map;
 
 public final class GameConfig {
 
-    private static GameConfig instance = new GameConfig();
+    private static GameConfig instance;
     private final Map<String, Object> settings = new LinkedHashMap<>();
 
-    private GameConfig() {
+    public GameConfig() {
         loadDefaults();
         loadFromClassPath("config.json");
     }
 
     public static GameConfig getInstance() {
+        if (instance == null) {
+            instance = new GameConfig();
+        }
         return instance;
     }
+
 
     private void loadDefaults() {
         settings.put("playerStartingHp", 80.0);
