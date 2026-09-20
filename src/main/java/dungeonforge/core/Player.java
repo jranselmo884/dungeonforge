@@ -18,7 +18,7 @@ public class Player extends Entity {
         // Starting HP, attack, defense. Hardcoded. This is one of the things US-1.1 is about.
 
         super(name,
-                GameConfig.getInstance().getInt("playerStartingHP"),
+                GameConfig.getInstance().getInt("playerStartingHp"),
                 GameConfig.getInstance().getInt("playerStartingAttack"),
                 GameConfig.getInstance().getInt("playerStartingDefense"));
     }
