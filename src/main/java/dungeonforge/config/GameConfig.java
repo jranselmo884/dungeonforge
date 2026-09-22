@@ -17,9 +17,9 @@ public final class GameConfig {
         loadFromClassPath("config.json");
     }
 
-    public static GameConfig getInstance() {
+    public static synchronized GameConfig getInstance() {
         if (instance == null) {
-            instance = new GameConfig();
+                instance = new GameConfig();
         }
         return instance;
     }
