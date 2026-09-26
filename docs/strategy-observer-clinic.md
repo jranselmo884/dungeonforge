@@ -19,24 +19,25 @@ Suppose behaviour is expressed by subclassing `Monster` — `AggressiveSkeleton`
 
 | Question | Your answer |
 |---|---|
-| How many classes for 15 species × 4 behaviours? | |
-| Add a 5th behaviour (say, "berserk"). How many NEW classes? | |
-| Add a 16th species. How many NEW classes? | |
-| A skeleton is losing badly and should start running. **Can a `SkittishSkeleton` object become an `AggressiveSkeleton` object at runtime?** Answer yes or no and say why. | |
+| How many classes for 15 species × 4 behaviours? |60 |
+| Add a 5th behaviour (say, "berserk"). How many NEW classes? | 15|
+| Add a 16th species. How many NEW classes? | 64|
+| A skeleton is losing badly and should start running. **Can a `SkittishSkeleton` object become an `AggressiveSkeleton` object at runtime?** Answer yes or no and say why. | No, because the object is a concrete instance that already has a defined state that cannot be changed.|
 
 ### The composition approach
 
 | Question | Your answer |
 |---|---|
-| How many classes for 15 species + 4 strategies? | |
-| Add a 5th behaviour. How many NEW classes? | |
-| Add a 16th species. How many NEW **Java** files? | |
-| Can a monster change behaviour at runtime? How? | |
+| How many classes for 15 species + 4 strategies? | 19|
+| Add a 5th behaviour. How many NEW classes? | 1|
+| Add a 16th species. How many NEW **Java** files? | 1|
+| Can a monster change behaviour at runtime? How? | Yes, by changing the state of an object's behavior using a setBehavior method like the textbooks example of setQuackBehavior and setFlyBehavior. A model duck can be changed from not flying to using a rocket flying method by using setFlyBehavior and changing the FlyBehavior to FlyRocketPowered in runtime. |
 
 **Now write two or three sentences.** Head First calls this the SimUDuck problem. In your own
 words: **what is the actual defect in the subclassing design?** Not "it's more classes" —
 there's a deeper problem that the last row of each table points at.
 
+The "disease" is the issue of static behavior at runtime, using subclasses to setBehavior states is not sustainable. If behaviors need to changed by using a config.json file, input, or even a database tying behaviors to classes limits the potential for adding, removing, and changing behaviors. In dungeonforge it would leave us without the ability to change a monster's behavior as a result of it taking sufficient damage. A monster cannot change itself into a fleeing monster at runtime if its "standard" behavior is a class.
 
 ## D2 — The coupling experiment · 9 pts
 
