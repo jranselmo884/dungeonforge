@@ -1,20 +1,30 @@
 package dungeonforge.factory;
 
+/**
+ * WEEK 4 -- the blueprint a factory turns into a Monster.
+ *
+ * Plain data, no behaviour. Its whole job is to let monster CONTENT live in a JSON file
+ * instead of in Java, so adding a monster is a data change rather than a code change.
+ */
 public class MonsterDef {
 
-    private final String id;
-    private final String name;
-    private final int hp;
-    private final int attack;
-    private final int xp;
-    private final String theme;
-    private final boolean boss;
+    public final String id;
+    public final String name;
+    public final int hp;
+    public final int attack;
+    public final int xp;
+    public final String theme;
+    /** Bosses are excluded from ordinary spawns -- a ThemeKit asks for one by name. */
+    public final boolean boss;
+
+
+    public final String strategy;
 
     public MonsterDef(String id, String name, int hp, int attack, int xp, String theme) {
-        this(id, name, hp, attack, xp, theme, false);
+        this(id, name, hp, attack, xp, theme, false, "aggressive");
     }
 
-    public MonsterDef(String id, String name, int hp, int attack, int xp, String theme, boolean boss) {
+    public MonsterDef(String id, String name, int hp, int attack, int xp, String theme, boolean boss, String strategy) {
         this.id = id;
         this.name = name;
         this.hp = hp;
@@ -22,6 +32,7 @@ public class MonsterDef {
         this.xp = xp;
         this.theme = theme;
         this.boss = boss;
+        this.strategy = strategy;
     }
 
     public String getId() {
@@ -52,9 +63,13 @@ public class MonsterDef {
         return boss;
     }
 
+    public String getStrategy() { return strategy; }
+
+
     @Override
     public String toString() {
-        return id + "(" + name + " hp="+ hp + "attack=" + attack + " theme=" + (boss ? " BOSS " : "") +")";
+        return id + "(" + name + " hp=" + hp + " atk=" + attack + " theme=" + theme
+                + (boss ? " BOSS" : "") + ")";
     }
-
 }
+
