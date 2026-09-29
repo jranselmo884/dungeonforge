@@ -51,11 +51,11 @@ type, or a `DangerMeter` that notices when your HP drops below 25%. Subscribe it
 
 | Question | Your answer |
 |---|---|
-| How many **new** files? | |
-| Did `Combat.java` change? | |
-| Did `EventBus.java` change? | |
-| Did any existing listener change? | |
-| Which files changed at all? | |
+| How many **new** files? | 1|
+| Did `Combat.java` change? |No |
+| Did `EventBus.java` change? |No |
+| Did any existing listener change? |No |
+| Which files changed at all? | Added 1 and changed Main.java|
 
 **Paste `git diff --stat`:**
 
@@ -75,6 +75,13 @@ you to edit `Combat` and the bus version does not.
 
 > A good answer names a specific future feature. A great answer names one from this course's
 > remaining schedule.
+> 
+ By using a direct call without implementing the Observer pattern it becomes tightly coupled to the concrete classes
+that would require a refactor of Combat everytime we need a new "listener". It also tightly couples together future 
+features that may greatly benefit from having loose coupling such as implementing a GUI. Having the GUI tightly coupled
+to the concrete objects would greatly increase the chance of something breaking everything code needs to be refactored.
+While we do add three classes using the bus and event classes we gain something thats invaluable to us as OOP
+programmers, loosely coupled methods and objects that do not break that as we add more features.
 
 
 ## D3 — The swap, demonstrated · 5 pts
@@ -88,17 +95,29 @@ Forge Golem changes tactics: aggressive -> skittish.
 **Paste yours:**
 
 ```
-
+-- strategy highlights --
+  Skeleton changes tactics. aggressive -> skittish
+  Skeleton flees into the dark.
+  Bone Priest mends Wight
+  Wight changes tactics. aggressive -> skittish
+  Wight flees into the dark.
+  Imp changes tactics. ranged -> skittish
+  Imp flees into the dark.
+  Imp changes tactics. ranged -> skittish
+  Imp flees into the dark.
+  Ember Sprite changes tactics. ranged -> skittish
 ```
 
 **Now answer:** at the moment that line was printed, what changed about the `Forge Golem`
 object? Be precise. Its class? Its fields? Its identity? What *specifically* is different
 about it one instruction later?
 
+When the Skeleton changed it tactics what changed about it was one of its fields, the strategy interface.
 
 **Then add a fifth strategy** of your own invention. How many existing files did you have to
 modify, and which?
 
+Just one class would change and we would add a file for the new strategy.
 
 ## D4 — One honest question · 3 pts
 
@@ -109,6 +128,15 @@ holds one and delegates to it.
 **Without looking ahead, guess:** what could possibly distinguish them? You are not expected
 to be right. You're expected to have a hypothesis on record before Week 8 tells you.
 
+When we first started this week's chapter I thought we were going to be essentially working with "flags" but now having 
+gone through and implemented the Observer method its clear to me that this is something similar but actually meant as a 
+subscriber to subject relationship. The way both sides have different methods of sending these changes across each other
+is asymmetrical, with pushes and pulls differs from what I imagine the state pattern might be. I imagine the state
+pattern to follow similar principles as the Observer but with identical pushes and pulls as the point would be to modify 
+a objects state or flags to have the object treated in a certain way.
 
 **And anything else that's still unclear:**
 
+The only thing that is a bit unclear to me is the specifics of what the pull that subscribers can do, because said subscribers
+can choose which information to include in the "subscriber started update" and how that affects any pushes the subject 
+does.
