@@ -1,199 +1,138 @@
-# Week 3 Evidence — the before-and-after
+# Week 7 Evidence
 
-> Your Definition of Done asks for evidence that the acceptance criteria are met. This file
-> is where it goes. Fill it in as you work, not at the end.
-
-## 1. BEFORE — the problem, demonstrated
-
-Do this **before writing any code**:
+## 1. BEFORE
 
 ```bash
-mvn -q exec:java > run1.txt
-mvn -q exec:java > run2.txt
-diff run1.txt run2.txt
+mvn -q exec:java
 ```
 
-**Paste a few lines of the diff:**
+Play a few turns, then answer:
 
-```
-10,12c10,12
-< L1R0: (empty)
-< L1R1: Bone Priest (14/14 HP, ATK 5)
-< L1R2: Wight (15/15 HP, ATK 6)  Skeleton (15/15 HP, ATK 5)
----
-> L1R0: Bone Priest (17/17 HP, ATK 6)  Crypt Rat (17/17 HP, ATK 5)
-> L1R1: Wight (18/18 HP, ATK 4)
-> L1R2: (empty)
-14,15c14,15
-< L1R4: Crypt Rat (18/18 HP, ATK 6)  Wight (15/15 HP, ATK 5)
-< L1R5: Crypt Rat (17/17 HP, ATK 6)  Crypt Rat (16/16 HP, ATK 4)
----
-> L1R4: Wight (18/18 HP, ATK 5)  Skeleton (17/17 HP, ATK 6)
-> L1R5: (empty)
-17c17
-< L1R7: Bone Priest (16/16 HP, ATK 5)  Crypt Rat (18/18 HP, ATK 6)
----
-> L1R7: Skeleton (15/15 HP, ATK 6)
-19,26c19,26
-< L2R0: Skeleton (22/22 HP, ATK 6)
-< L2R1: (empty)
-< L2R2: Crypt Rat (20/20 HP, ATK 5)
-< L2R3: Wight (20/20 HP, ATK 5)  Skeleton (18/18 HP, ATK 5)
-< L2R4: Skeleton (22/22 HP, ATK 5)  Skeleton (19/19 HP, ATK 6)
-< L2R5: Wight (19/19 HP, ATK 5)  Skeleton (22/22 HP, ATK 7)
-< L2R6: Bone Priest (21/21 HP, ATK 6)
-< L2R7: Crypt Rat (20/20 HP, ATK 5)  Bone Priest (22/22 HP, ATK 6)
----
-> L2R0: Crypt Rat (19/19 HP, ATK 5)
-> L2R1: Crypt Rat (18/18 HP, ATK 5)  Bone Priest (18/18 HP, ATK 7)
-> L2R2: Crypt Rat (22/22 HP, ATK 5)  Bone Priest (18/18 HP, ATK 7)
-> L2R3: Wight (22/22 HP, ATK 6)  Crypt Rat (18/18 HP, ATK 5)
-> L2R4: Skeleton (22/22 HP, ATK 5)  Crypt Rat (21/21 HP, ATK 6)
-> L2R5: Skeleton (20/20 HP, ATK 5)  Bone Priest (22/22 HP, ATK 6)
-> L2R6: Bone Priest (22/22 HP, ATK 6)
-> L2R7: (empty)
-28,35c28,35
-< L3R0: Skeleton (23/23 HP, ATK 8)
-< L3R1: (empty)
-< L3R2: (empty)
-< L3R3: Bone Priest (24/24 HP, ATK 6)
-< L3R4: Wight (24/24 HP, ATK 7)  Crypt Rat (25/25 HP, ATK 8)
-< L3R5: Crypt Rat (24/24 HP, ATK 6)
-< L3R6: (empty)
-< L3R7: (empty)
----
-> L3R0: (empty)
-> L3R1: Crypt Rat (22/22 HP, ATK 8)  Wight (26/26 HP, ATK 7)
-> L3R2: Crypt Rat (25/25 HP, ATK 6)
-> L3R3: (empty)
-> L3R4: (empty)
-> L3R5: Crypt Rat (22/22 HP, ATK 7)
-> L3R6: Bone Priest (22/22 HP, ATK 8)  Bone Priest (24/24 HP, ATK 6)
-> L3R7: Wight (22/22 HP, ATK 6)  Wight (26/26 HP, ATK 7)
-37c37
-< Total monsters: 25
----
-> Total monsters: 26
+**Paste five consecutive `else if` branches from `gameLoop()`:**
+
+```java
+if (verb.isEmpty()) {
+} else if (verb.equals("north") || verb.equals("south") || verb.equals("down")) {
+} else if (verb.equals("attack")) {
+} else if (verb.equals("look")) {
+} else if (verb.equals("take")) {if (i.getName().toLowerCase().contains(rest.toLowerCase())) { found = i; break; }
 ```
 
-**How many separate `Random` objects did you find in the starter?** _3_
+**You want to add `equip`. List every edit you would make:**
+1. Main.java import dungeonforge.items.Weapon;
+2. Main.java add another else if statement for the new verb "equip" in gameloop
+3. Main.java set tookATurn = true in the new branch for #2
+4. Main.java lines 219-220, add "equip" to the println statements
+5. Player.java import dungeonforge.items.Weapon;
+6. Player.java private Weapon equippedWeapon; + equip(Weapon) + getEqippedWeapon()
+7. Player.java make the weapon count toward damage
+8. Player.java describe() lines 59 reads attackPower, not the getter
+9. Combat.java int damage = player.getAttackPower();
+10. src/test/java/dungeonforge/EquipTest.java
+11. README-WEEK7.md and any verb list in docs
 
-(`grep -rn "new Random(" src/main/java`)
+**You want `e` to mean `equip`. List every *additional* edit:**
 
-```
-src/main/java/dungeonforge/core/Room.java:15:    private final Random rng = new Random();
-src/main/java/dungeonforge/core/GameWorld.java:19:    private final Random random = new Random();
-src/main/java/dungeonforge/core/Monster.java:16:    private static final Random RNG = new Random();
-```
-**In one sentence: why does that make a bug report like "the boss room on level 2 was empty"
-impossible for me to act on?**
-Each time the dungeonforge program is ran it will provide different random outputs, the boss room on level 2 might not be empty when the developer ran it.
+Starter reference
 
-## 2. AFTER — US-1.1, settings live in one place
+1. Functional edit || verb.equals("e")
+2. Documentation 2 lines edited by hand, or it silently drifts
+3. Can it come from config? No
+4. Can you list every alias? No
+5. Collision safety silent
+6. You would have to modify the conditional block to test for "e" OR "equip" in a case sensitive way.
 
-```bash
-grep -rn "playerStartingHp\|60\|new Random(" src/main/java/dungeonforge/core
-```
+**You want undo. Where in `gameLoop()` would the code go?** *(There is no good answer. Say
+why in one sentence.)*
 
-**Paste the output. AC2 wants zero hardcoded literals outside the config class:**
+There is no good place to put the undo in gameLoop because the undo method will have to have copy a complete state of the 
+delve at the moment that we want to undo and will all of the else if statements if gets tricky to copy that complete 
+state.
 
-```bash
-chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ grep -rn "playerStartingHp\|60\|new Random(" src/main/java/dungeonforge/core
-src/main/java/dungeonforge/core/Room.java:15:    private final Random rng = new Random();
-src/main/java/dungeonforge/core/GameWorld.java:21:    private final Random random = new Random();
-src/main/java/dungeonforge/core/Monster.java:16:    private static final Random RNG = new Random();
-chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ 
-```
+## 2. AFTER — US-5.1
 
-**Change `playerStartingHp` in `config.json` to 200, run, and paste the player line:**
+**Paste your new `gameLoop()` in full. It should fit in a dozen lines:**
 
-```bash
-=========================================
-        D U N G E O N F O R G E
-  A Head First Design Patterns project
-=========================================
-  version 0.2.0
+```java
+    private static void gameLoop(CommandParser parser, GameContext ctx) {
 
-Delver  HP 200/200  ATK 10  DEF 3  Gold 0  XP 0  Carry 60.0kg
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
 
--- Level 1 --
-L1R0: Skeleton (18/18 HP, ATK 5)  Crypt Rat (16/16 HP, ATK 6)
-L1R1: Bone Priest (16/16 HP, ATK 4)
-L1R2: Wight (14/14 HP, ATK 5)
-L1R3: Skeleton (14/14 HP, ATK 6)  Wight (17/17 HP, ATK 5)
-L1R4: Bone Priest (15/15 HP, ATK 5)
-L1R5: (empty)
-L1R6: (empty)
-L1R7: Bone Priest (18/18 HP, ATK 6)  Bone Priest (16/16 HP, ATK 6)
-```
+        while (ctx.isRunning() && ctx.getPlayer().isAlive()) {
+            System.out.print("\n[HP " + ctx.getPlayer().getHp() + "/" + ctx.getPlayer().getMaxHp() + "] > ");
+            System.out.flush();
 
-**Rename `config.json` to `config.json.bak`, run again, and paste what happens (AC4):**
+            String line;
+            try { line = in.readLine(); } catch (Exception e) { break; }
+            if (line == null) break;
+            System.out.println();
 
-```bash
-=========================================
-        D U N G E O N F O R G E
-  A Head First Design Patterns project
-=========================================
-  version 0.2.0
-
-Delver  HP 80/80  ATK 8  DEF 2  Gold 0  XP 0  Carry 60.0kg
-
--- Level 1 --
-L1R0: Bone Priest (18/18 HP, ATK 5)
-L1R1: (empty)
-L1R2: Skeleton (15/15 HP, ATK 6)  Skeleton (16/16 HP, ATK 5)
-L1R3: Crypt Rat (18/18 HP, ATK 5)  Crypt Rat (16/16 HP, ATK 6)
-L1R4: (empty)
-L1R5: Skeleton (16/16 HP, ATK 5)
-L1R6: Bone Priest (18/18 HP, ATK 5)  Skeleton (15/15 HP, ATK 6)
-L1R7: Wight (17/17 HP, ATK 6)
+            Command command = parser.parse(line, ctx);
+            command.execute();
+        }
+    }
 ```
 
-## 3. AFTER — US-1.2, the same seed produces the same dungeon
+**Paste the registry lines that add `drop` and its alias:**
 
-```bash
-mvn -q exec:java > after1.txt
-mvn -q exec:java > after2.txt
-diff after1.txt after2.txt && echo "IDENTICAL"
+```java
+register("drop", DropCommand::new);
+
 ```
 
-**Result:**
+## 3. AFTER — US-5.2
 
-```bash
-> diff after1.txt after2.txt && echo "IDENTICAL"
-IDENTICAL
-```
+**The naive-undo failure table from Part D2 step 2:**
 
-**Now a different seed (AC4). Paste enough to show the world changed:**
+| | HP | XP | Gold | Monster HP |
+|---|---|---|---|---|
+| Before attack | | | | |
+| After attack | | | | |
+| After naive undo | | | | |
 
-```bash
-diff after1.txt after3.txt && echo "IDENTICAL"
-10,13c10,13
-< L1R0: Bone Priest (17/17 HP, ATK 6)
-< L1R1: Wight (16/16 HP, ATK 5)  Crypt Rat (15/15 HP, ATK 5)
-< L1R2: (empty)
-< L1R3: Crypt Rat (14/14 HP, ATK 6)  Skeleton (17/17 HP, ATK 4)
----
-> L1R0: Wight (16/16 HP, ATK 5)
-> L1R1: Skeleton (14/14 HP, ATK 4)  Bone Priest (15/15 HP, ATK 5)
-> L1R2: Crypt Rat (16/16 HP, ATK 5)  Crypt Rat (14/14 HP, ATK 4)
-> L1R3: (empty)
-15,17c15,17
-```
+**The same table after `TurnSnapshot`:**
 
-## 4. AFTER — US-1.3, the rule is enforced
+| | HP | XP | Gold | Monster HP |
+|---|---|---|---|---|
+| Before attack | | | | |
+| After attack | | | | |
+| After snapshot undo | | | | |
 
-**Paste your `mvn test` summary:**
+## 4. AFTER — US-5.3 and US-5.4
+
+**Paste a `loot` that picks up three things, then an `undo` that puts them all back:**
 
 ```
 
 ```
 
-**Paste the URL of the green CI check on your pull request:**
+**Paste the hourglass rewinding a turn, with `inventory` before and after:**
 
+```
 
-## 5. The one-line summary for your Sprint Review
+```
+
+**How long did US-5.4 actually take you?** ____ minutes
+
+## 5. The replay
+
+**Paste your `history` output and the first ten lines of replaying it with `--script=`:**
+
+```
+
+```
+
+## 6. Tests and CI
+
+**`mvn test` summary:**
+
+```
+
+```
+
+**Green CI URL:**
+
+## 7. Sprint review — one sentence
 
 > What can the project do now that it could not do last week?
-
 

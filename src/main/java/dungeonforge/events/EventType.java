@@ -1,7 +1,7 @@
 package dungeonforge.events;
 
 public enum EventType {
-    DAMAGED_DEALT,
+    DAMAGE_DEALT,
     DAMAGE_TAKEN,
     MONSTER_DIED,
     MONSTER_FLED,
