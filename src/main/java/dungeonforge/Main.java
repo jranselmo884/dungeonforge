@@ -1,6 +1,7 @@
 package dungeonforge;
 
 import dungeonforge.commands.Command;
+import dungeonforge.commands.CommandHistory;
 import dungeonforge.commands.CommandParser;
 import dungeonforge.commands.GameContext;
 import dungeonforge.core.Combat;
@@ -19,6 +20,7 @@ import dungeonforge.events.GameEvent;
 import dungeonforge.events.GameEventListener;
 import dungeonforge.events.Quest;
 import dungeonforge.events.QuestTracker;
+import dungeonforge.items.Hourglass;
 import dungeonforge.items.Item;
 import dungeonforge.items.Potion;
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -89,6 +91,7 @@ public final class Main {
 
             Player player = new Player(res.getString("playerName"));
             player.addItem(new Potion("Small Healing Draught", 0.3, 20, 22));
+            player.addItem(new Hourglass(2));
             GameWorld world = new GameWorld(player);
 
             EventBus bus = new EventBus();
@@ -102,10 +105,11 @@ public final class Main {
             bus.subscribe(meter);
             bus.subscribe(new ConsolePrinter());
 
-            GameContext ctx = new GameContext(world, player, bus, new Combat(bus));
+            CommandHistory history = new CommandHistory();
+            GameContext ctx = new GameContext(world, player, bus, new Combat(bus), history);
             CommandParser cmds = new CommandParser(quests, achievements);
 
-            gameLoop(cmds, ctx);
+            gameLoop(cmds, ctx, history);
 
         } catch (ArgumentParserException e) {
             parser.handleError(e);
@@ -116,7 +120,7 @@ public final class Main {
     /**
      * TODO(week 7): eleven verbs, one method, and no way to take anything back.
      */
-    private static void gameLoop(CommandParser parser, GameContext ctx) {
+    private static void gameLoop(CommandParser parser, GameContext ctx, CommandHistory history) {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
 
@@ -131,6 +135,7 @@ public final class Main {
 
             Command command = parser.parse(line, ctx);
             command.execute();
+            history.push(command);
         }
     }
 

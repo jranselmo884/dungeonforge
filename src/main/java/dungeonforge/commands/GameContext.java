@@ -13,21 +13,19 @@ public class GameContext {
     private final GameWorld world;
     private final Player player;
     private final Combat combat;
-
-
-    //private final CommandHistory history;
+    private final CommandHistory history;
 
     private Room currentRoom;
 
     private boolean running = true;
 
 
-    public GameContext(GameWorld world, Player player, EventBus bus, Combat combat /*,CommandHistory history*/) {
+    public GameContext(GameWorld world, Player player, EventBus bus, Combat combat ,CommandHistory history) {
         this.bus = bus;
         this.world = world;
         this.player = player;
         this.combat = combat;
-        //this.history = history;
+        this.history = history;
         this.currentRoom = world.startingRoom();
     }
 
@@ -41,7 +39,7 @@ public class GameContext {
     public Combat getCombat() {
         return combat;
     }
-    //public CommandHistory getHistory() { return history; }
+    public CommandHistory getHistory() { return history; }
     public Room getCurrentRoom() {
         return currentRoom;
     }
@@ -52,4 +50,5 @@ public class GameContext {
     public void stop() { this.running = false; }
 
     public void runMonsterTurns() { if (player.isAlive()) { combat.monsterTurns(player, currentRoom); } }
+
 }

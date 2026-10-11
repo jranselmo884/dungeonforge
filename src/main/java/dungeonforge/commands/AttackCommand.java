@@ -21,6 +21,7 @@ public class AttackCommand extends AbstractCommand{
         return true;
     }
 
+
     private Monster findTarget() {
         if (args.isBlank()) return room().firstLivingIn();
         for (Monster m : room().getMonsters()) {
