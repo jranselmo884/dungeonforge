@@ -100,19 +100,51 @@ register("drop", DropCommand::new);
 
 ## 4. AFTER — US-5.3 and US-5.4
 
+You have replay backwards because if you undid the children forward, you would end up only going back in history 1
+command. First in, last out.
+
 **Paste a `loot` that picks up three things, then an `undo` that puts them all back:**
 
 ```
+look
+[HP 76/80] > 
+  [L1R1Level 1: Crypt
+    "Damp stone. Something drips in the dark, patiently."
+     Iron-bound Chest: 
+    - Bone Shortsword [dmg 6] (2.0kg, 50g)
+    - Bone Shortsword [dmg 6] (2.0kg, 50g)
+    - Grave Shroud [def 3] (3.0kg, 43g)
+    Exits: south, north
 
+loot
+[HP 76/80] > 
+  You take Bone Shortsword.
+  You take Bone Shortsword.
+  You take Grave Shroud.
 ```
 
 **Paste the hourglass rewinding a turn, with `inventory` before and after:**
 
 ```
+inventory
+[HP 76/80] > 
+  You are carrying:
+     -Small Healing Draught [heals 22] (0.3kg, 20g)
+     -Chronomaster's Hourglass [2charges] (rewinds one turn)
+     -Bone Shortsword [dmg 6] (2.0kg, 50g)
+     -Bone Shortsword [dmg 6] (2.0kg, 50g)
+     -Grave Shroud [def 3] (3.0kg, 43g)
 
+use Chronomaster's Hourglass
+[HP 76/80] > 
+  Sand runs backwards. The last moment unhappens.
+
+inventory
+[HP 76/80] > 
+  You are carrying nothing.
 ```
 
-**How long did US-5.4 actually take you?** ____ minutes
+**How long did US-5.4 actually take you?** _30_ minutes
 
 ## 5. The replay
 
