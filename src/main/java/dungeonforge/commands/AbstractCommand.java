@@ -9,6 +9,7 @@ public abstract class AbstractCommand implements Command {
     protected GameContext ctx;
     protected final String args;
     private boolean actuallyRan;
+    private TurnSnapshot before;
     //TODO: Momento pattern
 
     public AbstractCommand(GameContext ctx, String args) {
@@ -23,7 +24,14 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public final void execute() {
+        if (endsTurn()) {
+            before = TurnSnapshot.capture(ctx.getPlayer(), ctx.getCurrentRoom());
+        }
         actuallyRan = doExecute();
+        if (!actuallyRan) {
+            before = null;
+            return;
+        }
         if (endsTurn()) {
             ctx.runMonsterTurns();
         }
@@ -33,13 +41,20 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public void undo() {
-
+        if (before != null) {
+            before.restore();
+            ctx.setCurrentRoom(before.getRoom());
+        }
     }
 
     @Override
     public String getDescription() {
         return "";
     }
+
+    public boolean isUndoable() { return actuallyRan; }
+    public boolean didRun() { return actuallyRan; }
+
 
 
 }

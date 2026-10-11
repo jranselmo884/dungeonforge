@@ -86,17 +86,17 @@ register("drop", DropCommand::new);
 
 | | HP | XP | Gold | Monster HP |
 |---|---|---|---|---|
-| Before attack | | | | |
-| After attack | | | | |
-| After naive undo | | | | |
+| Before attack |[HP 80/80] | | | Ghoul (17/17 HP|
+| After attack |[HP 78/80] | | |Ghoul (7/17 HP |
+| After naive undo |[HP 78/80] | | | Ghoul (17/17 HP|
 
 **The same table after `TurnSnapshot`:**
 
 | | HP | XP | Gold | Monster HP |
 |---|---|---|---|---|
-| Before attack | | | | |
-| After attack | | | | |
-| After snapshot undo | | | | |
+| Before attack |45 |12 |30 |10 |
+| After attack |45 |18 |30 |0 |
+| After snapshot undo |45 |12 |30 |10 |
 
 ## 4. AFTER — US-5.3 and US-5.4
 
