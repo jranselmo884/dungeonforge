@@ -16,11 +16,11 @@
 
 | Sprint | Committed | Completed |
 |---|---|---|
-| Sprint 0 (Wk 2) | 7 | ____ |
-| Sprint 1 (Wk 3) | 8 | ____ |
-| Sprint 2 (Wk 4) | 10 | ____ |
-| Sprint 3 (Wk 5) | 10 | ____ |
-| Sprint 4 (Wk 6, catch-up) | — | ____ |
+| Sprint 0 (Wk 2) | 7 | 7__ |
+| Sprint 1 (Wk 3) | 8 | 8__ |
+| Sprint 2 (Wk 4) | 10 | _10_ |
+| Sprint 3 (Wk 5) | 10 | _12_ |
+| Sprint 4 (Wk 6, catch-up) | _ | _3__ |
 
 Five sprints of data. **If your completed column averages below 8, drop US-5.3 (the macro)
 and say so in your retro.** It is the most self-contained story here and the sprint still
@@ -71,12 +71,16 @@ demonstrates Command without it.
 
 | Story | Estimated | Actual hours | High, low, about right? |
 |---|---|---|---|
-| US-5.1 | 4 | | |
-| US-5.2 | 3 | | |
-| US-5.3 | 2 | | |
-| US-5.4 | 1 | | |
+| US-5.1 | 4 | 6.5| high|
+| US-5.2 | 3 | 5|high |
+| US-5.3 | 2 | 3|about right |
+| US-5.4 | 1 | 1|about right |
 
-**Points completed:** ____ · **Running velocity:** ____
+**Points completed:** _10_ · **Running velocity:** _8_
 
 ## Sprint Review — one sentence
 
+This week was a heavy sprint but also had a lot to learn, the command method definitely took me time to understand and 
+digest, the book gave great examples but it wasn't until lecture that the encapsulation of a request made sense. And in
+the lab the pattern made even more sense. I can see I might need to drop a user story next sprint as to comfortably 
+finish the sprint in one week.

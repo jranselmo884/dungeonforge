@@ -29,9 +29,13 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * WEEK 7 -- the game is now INTERACTIVE. You type; things happen.
@@ -57,7 +61,8 @@ public final class Main {
 
     public static final String VERSION = "0.6.0";
 
-    private Main() { }
+    private Main() {
+    }
 
     public static String banner() {
         return """
@@ -67,7 +72,7 @@ public final class Main {
                 =========================================""";
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ArgumentParser parser = ArgumentParsers.newFor("dungeonforge").build()
                 .defaultHelp(true)
                 .description("A turn-based dungeon crawler built one design pattern at a time.");
@@ -78,44 +83,74 @@ public final class Main {
         parser.addArgument("-s", "--seed")
                 .dest("seed").type(Long.class).setDefault(-1L)
                 .help("World seed; omit to use the value in config.json");
+        parser.addArgument("-f", "--script")
+                .dest("script").type(String.class).setDefault("")
+                .help("Replay a recorded session from a file instead of reading stdin.");
+
+        String script;
+        Player player;
+
 
         try {
             Namespace res = parser.parseArgs(args);
 
             Long seed = res.getLong("seed");
             if (seed != null && seed >= 0) RandomSource.getInstance().reseed(seed);
+            script = res.getString("script");
+            player = new Player(res.getString("playerName"));
 
-            System.out.println(banner());
-            System.out.println("  version " + VERSION + "   seed " + RandomSource.getInstance().getSeed());
-            System.out.println();
-
-            Player player = new Player(res.getString("playerName"));
-            player.addItem(new Potion("Small Healing Draught", 0.3, 20, 22));
-            player.addItem(new Hourglass(2));
-            GameWorld world = new GameWorld(player);
-
-            EventBus bus = new EventBus();
-            QuestTracker quests = new QuestTracker(bus);
-            AchievementSystem achievements = new AchievementSystem(bus);
-            CombatLog log = new CombatLog(200);
-            DamageMeter meter = new DamageMeter(bus, player, 0.25);
-            bus.subscribe(quests);
-            bus.subscribe(achievements);
-            bus.subscribe(log);
-            bus.subscribe(meter);
-            bus.subscribe(new ConsolePrinter());
-
-            CommandHistory history = new CommandHistory();
-            GameContext ctx = new GameContext(world, player, bus, new Combat(bus), history);
-            CommandParser cmds = new CommandParser(quests, achievements);
-
-            gameLoop(cmds, ctx, history);
 
         } catch (ArgumentParserException e) {
             parser.handleError(e);
             System.exit(1);
+            return;
+        }
+
+        System.out.println(banner());
+        System.out.println("  version " + VERSION + "   seed " + RandomSource.getInstance().getSeed());
+        System.out.println();
+
+        player.addItem(new Potion("Small Healing Draught", 0.3, 20, 22));
+        player.addItem(new Hourglass(2));
+        GameWorld world = new GameWorld(player);
+
+        EventBus bus = new EventBus();
+        QuestTracker quests = new QuestTracker(bus);
+        AchievementSystem achievements = new AchievementSystem(bus);
+        CombatLog log = new CombatLog(200);
+        DamageMeter meter = new DamageMeter(bus, player, 0.25);
+
+        bus.subscribe(quests);
+        bus.subscribe(achievements);
+        bus.subscribe(log);
+        bus.subscribe(meter);
+        bus.subscribe(new ConsolePrinter());
+
+        CommandHistory history = new CommandHistory();
+        GameContext ctx = new GameContext(world, player, bus, new Combat(bus), history);
+        CommandParser cmds = new CommandParser(quests, achievements);
+
+        bus.message("Type 'help' for what you can do. You are carrying a hourglass -- 'use Chornomaster's Hourglass' rewinds a turn.");
+        cmds.parse("look", ctx).execute();
+
+        if (script != null && !script.isBlank()) {
+            runScript(cmds, ctx, history, Files.readAllLines(Path.of(script)));
+        } else {
+            gameLoop(cmds, ctx, history);
         }
     }
+
+    private static void runScript(CommandParser cmds, GameContext ctx, CommandHistory history, List<String> lines) {
+        for (String line : lines) {
+            if (line.isBlank() || line.startsWith("#")) continue;
+            if (!ctx.isRunning() || !ctx.getPlayer().isAlive()) break;
+            System.out.println("\n[script] > " + line);
+            Command command = cmds.parse(line, ctx);
+            command.execute();
+            history.push(command);
+        }
+    }
+
 
     /**
      * TODO(week 7): eleven verbs, one method, and no way to take anything back.
@@ -137,25 +172,6 @@ public final class Main {
             command.execute();
             history.push(command);
         }
-    }
-
-    private static String describe(GameWorld world, Room room) {
-        DungeonLevel level = world.levelContaining(room);
-        StringBuilder b = new StringBuilder();
-        b.append("[").append(room.getId()).append("] Level ").append(level.getDepth())
-         .append(": ").append(level.getThemeName());
-        if (!room.getFlavor().isEmpty()) b.append("\n  \"").append(room.getFlavor()).append("\"");
-        if (room.hasLivingMonsters()) {
-            b.append("\n  Hostile:");
-            for (Monster m : room.getMonsters()) if (m.isAlive()) b.append(" ").append(m.describe());
-        }
-        for (Item i : room.getFloorItems()) b.append("\n  On the floor: ").append(i.describe());
-        if (room.getChest() != null && !room.getChest().getContents().isEmpty()) {
-            b.append("\n  ").append(room.getChest().getName()).append(":");
-            for (Item i : room.getChest().getContents()) b.append("\n    - ").append(i.describe());
-        }
-        b.append("\n  Exits: ").append(String.join(", ", room.getExits().keySet()));
-        return b.toString();
     }
 
     /** The console view. It prints; nothing else does. */

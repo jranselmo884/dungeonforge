@@ -151,7 +151,53 @@ inventory
 **Paste your `history` output and the first ten lines of replaying it with `--script=`:**
 
 ```
+[INFO] --- exec-maven-plugin:3.2.0:java (default-cli) @ dungeonforge ---
+=========================================
+        D U N G E O N F O R G E
+  A Head First Design Patterns project
+=========================================
+  version 0.6.0   seed 20260829
 
+  Type 'help' for what you can do. You are carrying a hourglass -- 'use Chornomaster's Hourglass' rewinds a turn.
+  [L1R0Level 1: Crypt
+    "Burial niches line the walls. Most are empty. MOST."
+    Exits: north
+
+[script] > n
+  You go north.
+  Ghoul Ghoullooses a shot for 2
+
+[script] > help
+  Available: [north, south, down, attack, take, drop, use, look, loot, inventory, status, quests, help, quit]
+ Aliases: {n=north, s=south, d=down, a=attack, kill=attack, hit=attack, get=take, t=take, drink=use, quaff=use, i=inventory, ?=help, exit=quit}
+
+[script] > n
+  You cannot walk away with enemies still standing.
+
+[script] > hit
+  You hit Ghoul for 10
+  Ghoul Ghoullooses a shot for 2
+
+[script] > hit
+  You hit Ghoul for 10
+  ACHIEVEMENT: First Blood -- Defeat your first monster
+  Ghoul dies.12
+
+[script] > loot
+  You take Bone Shortsword.
+  You take Bone Shortsword.
+  You take Grave Shroud.
+
+[script] > n
+  You go north.
+
+[script] > look
+  [L1R2Level 1: Crypt
+    "Burial niches line the walls. Most are empty. MOST."
+    Exits: south, north
+
+[script] > quit
+  You lay down your pack.
 ```
 
 ## 6. Tests and CI
@@ -159,8 +205,73 @@ inventory
 **`mvn test` summary:**
 
 ```
-
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ mvn test
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/usr/share/maven/lib/guava.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< edu.redwoods.cis18:dungeonforge >-------------------
+[INFO] Building DungeonForge 0.7.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ dungeonforge ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:compile (default-compile) @ dungeonforge ---
+[INFO] Recompiling the module because of added or removed source files.
+[INFO] Compiling 60 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ dungeonforge ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/chemito/IdeaProjects/dungeonforge/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:testCompile (default-testCompile) @ dungeonforge ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 4 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ dungeonforge ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running dungeonforge.SkeletonTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s -- in dungeonforge.SkeletonTest
+[INFO] Running dungeonforge.SingletonTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in dungeonforge.SingletonTest
+[INFO] Running dungeonforge.FactoryTest
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in dungeonforge.FactoryTest
+[INFO] Running dungeonforge.StrategyObserverTest
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in dungeonforge.StrategyObserverTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 45, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.015 s
+[INFO] Finished at: 2026-10-11T05:00:04-07:00
+[INFO] ------------------------------------------------------------------------
 ```
+
+**D3**
+
+Replay depends on the Singleton instance we created in Week 3 because the game runs on a seed and as such will have
+identical gameplay given the same seed and inputs. A fifth capability that it has it open for extension but closed for 
+modification to an extent. The example of adding a GUI later on is a much easier task with everything programmed to an 
+interface, GUI elements can be tied to these interfaces.
+
+**D4**
+
+RoomPopulator's populate method is very similar to the AbstractCommand.execute() as they both defer steps to other 
+objects. It is the factory method pattern.
+
+
 
 **Green CI URL:**
 
@@ -168,3 +279,6 @@ inventory
 
 > What can the project do now that it could not do last week?
 
+The project can now take aliases as inputs, encapsulates requests as objects in order to store them to use and treat as
+objects. Using the hourglass item, the game can be set to a previous state with the turn being recreated using a 
+complete state copy.
