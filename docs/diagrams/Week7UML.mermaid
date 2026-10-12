@@ -1,0 +1,692 @@
+classDiagram
+    direction TB
+
+%% ==========================================
+%% PATTERN: SINGLETON PATTERN
+%% ==========================================
+    namespace Singleton_Pattern {
+        class GameConfig {
+            -static GameConfig instance
+            -Map~String, Object~ settings
+            -GameConfig()
+            +static synchronized GameConfig getInstance()
+            +static String readResource(String resourceName)
+            +int getInt(String key)
+            +double getDouble(String key)
+            +long getSeed()
+            +static void resetForTests()
+            -void loadDefaults()
+            -void loadFromClasspath(String resourceName)
+        }
+
+        class RandomSource {
+            -static RandomSource instance
+            -Random rng
+            -long seed
+            -RandomSource()
+            +static synchronized RandomSource getInstance()
+            +int nextInt(int bound)
+            +int between(int lo, int hi)
+            +double nextDouble()
+            +T pick(List~T~ options)
+            +T pick(T[] options)
+            +long getSeed()
+            +void reseed(long newSeed)
+            +static void resetForTests()
+        }
+    }
+
+%% ==========================================
+%% PATTERN: SIMPLE FACTORY IDIOM
+%% ==========================================
+    namespace Simple_Factory {
+        class MonsterFactory {
+            -Map~String, MonsterDef~ blueprints
+            +MonsterFactory()
+            +void register(MonsterDef def)
+            +Monster create(String id, int depth)
+            +List~String~ idsForTheme(String name)
+            +String bossIdFromTheme(String theme)
+            +boolean has(String id)
+            +int blueprintCount()
+            +static CombatStrategy strategyFor(String name)
+            -void loadFrom(String resourceName)
+            -static String str(Object o, String fallback)
+            -static int num(Object o, int fallback)
+        }
+
+        class MonsterDef {
+            +String id
+            +String name
+            +int hp
+            +int attack
+            +int xp
+            +String theme
+            +boolean boss
+            +String strategy
+            +MonsterDef(String id, String name, int hp, int attack, int xp, String theme, boolean boss, String strategy)
+            +String getId()
+            +String getName()
+            +int getHp()
+            +int getAttack()
+            +int getXp()
+            +String getTheme()
+            +boolean isBoss()
+            +String getStrategy()
+        }
+    }
+
+%% ==========================================
+%% PATTERN: FACTORY METHOD PATTERN
+%% ==========================================
+    namespace Factory_Method {
+        class RoomPopulator {
+            <<abstract>>
+            #ThemeKit theme
+            #RoomPopulator(ThemeKit theme)
+            +populate(Room room, int depth)
+            #abstract List~Monster~ createEncounter(int depth)*
+            #Chest createChest(int depth)
+            +abstract String kind()*
+        }
+
+        class StandardRoomPopulator {
+            +StandardRoomPopulator(ThemeKit theme)
+            +String kind()
+            #List~Monster~ createEncounter(int depth)
+        }
+
+        class TreasureRoomPopulator {
+            +TreasureRoomPopulator(ThemeKit theme)
+            +String kind()
+            #List~Monster~ createEncounter(int depth)
+            #Chest createChest(int depth)
+        }
+
+        class BossRoomPopulator {
+            +BossRoomPopulator(ThemeKit theme)
+            +String kind()
+            #List~Monster~ createEncounter(int depth)
+            #Chest createChest(int depth)
+        }
+    }
+
+%% ==========================================
+%% PATTERN: ABSTRACT FACTORY PATTERN
+%% ==========================================
+    namespace Abstract_Factory {
+        class ThemeKit {
+            <<interface>>
+            +themeName()* String
+            +createMonster(int depth)* Monster
+            +createBoss(int depth)* Monster
+            +createLoot(int depth)* Item
+            +createRoomFlavor()* String
+        }
+
+        class CryptThemeKit {
+            -MonsterFactory factory
+            -static String[] FLAVORS
+            +CryptThemeKit(MonsterFactory factory)
+            +String themeName()
+            +Monster createMonster(int depth)
+            +Monster createBoss(int depth)
+            +Item createLoot(int depth)
+            +String createRoomFlavor()
+        }
+
+        class ForgeThemeKit {
+            -MonsterFactory factory
+            -static String[] FLAVORS
+            +ForgeThemeKit(MonsterFactory factory)
+            +String themeName()
+            +Monster createMonster(int depth)
+            +Monster createBoss(int depth)
+            +Item createLoot(int depth)
+            +String createRoomFlavor()
+        }
+
+        class FrostThemeKit {
+            -MonsterFactory factory
+            -static String[] FLAVORS
+            +FrostThemeKit(MonsterFactory factory)
+            +String themeName()
+            +Monster createMonster(int depth)
+            +Monster createBoss(int depth)
+            +Item createLoot(int depth)
+            +String createRoomFlavor()
+        }
+
+        class WinterfellThemeKit {
+            -MonsterFactory factory
+            -static String[] FLAVORS
+            +WinterfellThemeKit(MonsterFactory factory)
+            +String themeName()
+            +Monster createMonster(int depth)
+            +Monster createBoss(int depth)
+            +Item createLoot(int depth)
+            +String createRoomFlavor()
+        }
+
+        class ThemeRegistry {
+            -List~ThemeKit~ kits
+            +ThemeRegistry(MonsterFactory factory)
+            +ThemeKit forDepth(int depth)
+            +int size()
+            +List~String~ themeNames()
+        }
+    }
+
+%% ==========================================
+%% PATTERN: STRATEGY PATTERN
+%% ==========================================
+    namespace Strategy_Pattern {
+        class CombatStrategy {
+            <<interface>>
+            +chooseAction(Monster self, Player target, Room room)* Action
+            +name()* String
+        }
+
+        class AggressiveStrategy {
+            +Action chooseAction(Monster self, Player target, Room room)
+            +String name()
+        }
+
+        class RangedStrategy {
+            +Action chooseAction(Monster self, Player target, Room room)
+            +String name()
+        }
+
+        class SkittishStrategy {
+            +Action chooseAction(Monster self, Player target, Room room)
+            +String name()
+        }
+
+        class HealerStrategy {
+            +Action chooseAction(Monster self, Player target, Room room)
+            +String name()
+        }
+
+        class Action {
+            -Type type
+            -Entity target
+            -String flavor
+            +Action(Type type, Entity target, String flavor)
+            +static Action wait(String flavor)
+            +Type getType()
+            +Entity getTarget()
+            +String flavor()
+        }
+    }
+
+%% ==========================================
+%% PATTERN: OBSERVER PATTERN
+%% ==========================================
+    namespace Observer_Pattern {
+        class EventBus {
+            -List~GameEventListener~ listeners
+            +subscribe(GameEventListener listener)
+            +unsubscribe(GameEventListener listener)
+            +publish(GameEvent event)
+            +message(String text)
+            +int listenerCount()
+        }
+
+        class GameEventListener {
+            <<interface>>
+            +onEvent(GameEvent event)*
+        }
+
+        class GameEvent {
+            -EventType type
+            -Map~String, Object~ payload
+            +GameEvent(EventType type)
+            +static GameEvent of(EventType type, Object... keyValuePairs)
+            +static GameEvent message(String text)
+            +EventType getType()
+            +Object get(String key)
+            +String getString(String key)
+            +int getInt(String key)
+        }
+
+        class EventType {
+            <<enumeration>>
+            DAMAGE_DEALT
+            DAMAGE_TAKEN
+            MONSTER_DIED
+            MONSTER_FLED
+            MONSTER_HEALED
+            STRATEGY_CHANGED
+            XP_GAINED
+            GOLD_GAINED
+            LEVEL_ENTERED
+            ROOM_CLEARED
+            PLAYER_DIED
+            DELVE_SURVIVED
+            MESSAGE
+        }
+
+        class CombatLog {
+            -Deque~String~ lines
+            -int maxLines
+            +CombatLog(int maxLines)
+            +onEvent(GameEvent event)
+            +Deque~String~ getLines()
+            +void clear()
+            +int size()
+        }
+
+        class DamageMeter {
+            -EventBus bus
+            -Player player
+            -double damageThreshold
+            +DamageMeter(EventBus bus, Player player, double damageThreshold)
+            +onEvent(GameEvent event)
+        }
+
+        class QuestTracker {
+            -List~Quest~ quests
+            -EventBus bus
+            +QuestTracker(EventBus bus)
+            +onEvent(GameEvent event)
+            +List~Quest~ getQuests()
+            +int completedCount()
+        }
+
+        class AchievementSystem {
+            -Set~String~ unlocked
+            -EventBus bus
+            -int kills
+            -int fled
+            -int deepestLevel
+            +AchievementSystem(EventBus bus)
+            +onEvent(GameEvent event)
+            +Set~String~ getUnlocked()
+        }
+
+        class Quest {
+            -String id
+            -String description
+            -EventType trigger
+            -int required
+            -int progress
+            +Quest(String id, String description, EventType trigger, int required)
+            +boolean advance()
+            +boolean isComplete()
+        }
+    }
+
+%% ==========================================
+%% PATTERN: COMMAND PATTERN & SNAPSHOT
+%% ==========================================
+    namespace Command_Pattern {
+        class Command {
+            <<interface>>
+            +execute()*
+            +undo()*
+            +getDescription()* String
+            +isUndoable() boolean
+            +endsTurn() boolean
+        }
+
+        class AbstractCommand {
+            <<abstract>>
+            #GameContext ctx
+            #String args
+            -boolean actuallyRan
+            -TurnSnapshot before
+            +AbstractCommand(GameContext ctx, String args)
+            +execute()
+            +undo()
+            #abstract boolean doExecute()*
+            +Player player()
+            +EventBus bus()
+            +Room room()
+        }
+
+        class AttackCommand {
+            +AttackCommand(GameContext ctx, String args)
+            #boolean doExecute()
+            +String getDescription()
+        }
+
+        class MoveCommand {
+            -String direction
+            +MoveCommand(GameContext ctx, String direction)
+            #boolean doExecute()
+            +String getDescription()
+        }
+
+        class TakeCommand {
+            +TakeCommand(GameContext ctx, String args)
+            #boolean doExecute()
+            +String getDescription()
+        }
+
+        class DropCommand {
+            +DropCommand(GameContext ctx, String args)
+            #boolean doExecute()
+            +String getDescription()
+        }
+
+        class UseItemCommand {
+            -boolean rewound
+            +UseItemCommand(GameContext ctx, String args)
+            #boolean doExecute()
+            +String getDescription()
+        }
+
+        class SimpleCommand {
+            -String description
+            -Body body
+            +SimpleCommand(String description, Body body)
+            +execute()
+            +undo()
+            +String getDescription()
+        }
+
+        class NoCommand {
+            -EventBus bus
+            -String reason
+            +NoCommand(EventBus bus, String reason)
+            +execute()
+            +undo()
+            +String getDescription()
+        }
+
+        class MacroCommand {
+            -List~Command~ children
+            -String description
+            +MacroCommand(String description, List~Command~ children)
+            +execute()
+            +undo()
+            +String getDescription()
+            +int size()
+        }
+
+        class CommandFactory {
+            <<interface>>
+            +create(GameContext ctx, String args)* Command
+        }
+
+        class CommandParser {
+            -Map~String, CommandFactory~ registry
+            -Map~String, String~ aliases
+            -QuestTracker quests
+            -AchievementSystem achievements
+            +CommandParser(QuestTracker quests, AchievementSystem achievements)
+            +void register(String verb, CommandFactory factory)
+            +void alias(String shortForm, String verb)
+            +Command parse(String input, GameContext ctx)
+            +Command makeLootMacro(GameContext ctx)
+            +String describeRoom(GameContext ctx)
+        }
+
+        class CommandHistory {
+            -Deque~Command~ undoStack
+            -List~String~ replaying
+            -int maxDepth
+            +CommandHistory()
+            +void push(Command command)
+            +boolean undoLast()
+            +int depth()
+            +List~String~ replayLog()
+            +void clear()
+        }
+
+        class GameContext {
+            -EventBus bus
+            -GameWorld world
+            -Player player
+            -Combat combat
+            -CommandHistory history
+            -Room currentRoom
+            -boolean running
+            +GameContext(GameWorld world, Player player, EventBus bus, Combat combat, CommandHistory history)
+            +void runMonsterTurns()
+            +void stop()
+        }
+
+        class TurnSnapshot {
+            -Player player
+            -Room room
+            -int hp
+            -int xp
+            -int gold
+            -List~Item~ inventory
+            -List~Monster~ monsters
+            -List~Item~ floorItems
+            -List~Item~ chestContents
+            -Map~Monster, Integer~ monsterHp
+            -Map~Monster, CombatStrategy~ monsterStrategies
+            -TurnSnapshot(Player player, Room room)
+            +static TurnSnapshot capture(Player player, Room room)
+            +void restore()
+        }
+    }
+
+%% ==========================================
+%% PACKAGE: CORE GAME DOMAIN
+%% ==========================================
+    namespace Core_Domain {
+        class Entity {
+            <<abstract>>
+            #String name
+            #int hp
+            #int maxHp
+            #int attackPower
+            #int defense
+            #Entity(String name, int maxHp, int attackPower, int defense)
+            +boolean isAlive()
+            +void takeDamage(int amount)
+            +void heal(int amount)
+            +abstract String describe()*
+        }
+
+        class Player {
+            -int gold
+            -int xp
+            -List~Item~ inventory
+            +Player(String name)
+            +void addItem(Item i)
+            +boolean removeItem(Item i)
+            +Item findItem(String query)
+            +double carryCapacity()
+            +String describe()
+        }
+
+        class Monster {
+            -String species
+            -int xpReward
+            -CombatStrategy strategy
+            +Monster(String species, int maxHp, int attackPower, int xpReward)
+            +double hpFraction()
+            +String describe()
+        }
+
+        class GameWorld {
+            -Player player
+            -MonsterFactory monsterFactory
+            -ThemeRegistry themes
+            -List~DungeonLevel~ levels
+            +GameWorld(Player player)
+            +Room startingRoom()
+            +DungeonLevel levelContaining(Room room)
+            -RoomPopulator populatorFor(ThemeKit theme, boolean isFinalRoom)
+        }
+
+        class DungeonLevel {
+            -int depth
+            -String themeName
+            -List~Room~ rooms
+            +DungeonLevel(int depth, String themeName)
+            +void addRoom(Room r)
+        }
+
+        class Room {
+            -String id
+            -String flavor
+            -List~Monster~ monsters
+            -List~Item~ floorItems
+            -Chest chest
+            -Map~String, Room~ exits
+            +Room(String id)
+            +Monster firstLivingIn()
+            +boolean hasLivingMonsters()
+            +void link(String direction, Room to)
+        }
+
+        class Combat {
+            -EventBus bus
+            +Combat(EventBus bus)
+            +void monsterTurns(Player player, Room room)
+            +void playerStrikes(Player player, Monster target)
+            +static void restAfterRoom(Player player)
+        }
+    }
+
+%% ==========================================
+%% PACKAGE: ITEMS DOMAIN
+%% ==========================================
+    namespace Items_Domain {
+        class Item {
+            <<interface>>
+            +getName()* String
+            +getWeight()* double
+            +getValue()* int
+            +describe() String
+        }
+
+        class Weapon {
+            -String name
+            -double weight
+            -int value
+            -int damage
+            +Weapon(String name, double weight, int value, int damage)
+            +String describe()
+        }
+
+        class Armor {
+            -String name
+            -double weight
+            -int value
+            -int defense
+            +Armor(String name, double weight, int value, int defense)
+            +String describe()
+        }
+
+        class Potion {
+            -String name
+            -double weight
+            -int value
+            -int healAmount
+            +Potion(String name, double weight, int value, int healAmount)
+            +String describe()
+        }
+
+        class Treasure {
+            -String name
+            -double weight
+            -int value
+            +Treasure(String name, double weight, int value)
+        }
+
+        class Hourglass {
+            -int charges
+            +Hourglass(int charges)
+            +boolean hasCharges()
+            +void spendCharge()
+            +String describe()
+        }
+
+        class Chest {
+            -String name
+            -List~Item~ contents
+            +Chest(String name)
+            +void add(Item item)
+            +int totalValue()
+        }
+    }
+
+%% ==========================================
+%% CORE RELATIONSHIPS & INHERITANCE
+%% ==========================================
+
+%% Core Domain Inheritances
+    Entity <|-- Player
+    Entity <|-- Monster
+
+%% Items Realizations
+    Item <|.. Weapon
+    Item <|.. Armor
+    Item <|.. Potion
+    Item <|.. Treasure
+    Item <|.. Hourglass
+
+%% Factory Method Realizations
+    RoomPopulator <|-- StandardRoomPopulator
+    RoomPopulator <|-- TreasureRoomPopulator
+    RoomPopulator <|-- BossRoomPopulator
+    RoomPopulator --> ThemeKit : theme
+
+%% Abstract Factory Realizations
+    ThemeKit <|.. CryptThemeKit
+    ThemeKit <|.. ForgeThemeKit
+    ThemeKit <|.. FrostThemeKit
+    ThemeKit <|.. WinterfellThemeKit
+    CryptThemeKit --> MonsterFactory : uses
+    ForgeThemeKit --> MonsterFactory : uses
+    FrostThemeKit --> MonsterFactory : uses
+    WinterfellThemeKit --> MonsterFactory : uses
+    ThemeRegistry "1" *-- "many" ThemeKit : manages
+
+%% Simple Factory
+    MonsterFactory --> MonsterDef : blueprints
+
+%% Strategy Pattern Realizations
+    CombatStrategy <|.. AggressiveStrategy
+    CombatStrategy <|.. RangedStrategy
+    CombatStrategy <|.. SkittishStrategy
+    CombatStrategy <|.. HealerStrategy
+    Monster --> CombatStrategy : has-a
+    CombatStrategy ..> Action : creates
+
+%% Observer Pattern Realizations
+    GameEventListener <|.. CombatLog
+    GameEventListener <|.. DamageMeter
+    GameEventListener <|.. QuestTracker
+    GameEventListener <|.. AchievementSystem
+EventBus "1" o-- "many" GameEventListener : listeners
+GameEventListener ..> GameEvent : receives
+GameEvent --> EventType : type
+QuestTracker "1" *-- "many" Quest : tracks
+
+%% Command Pattern Realizations
+Command <|.. AbstractCommand
+Command <|.. SimpleCommand
+Command <|.. NoCommand
+Command <|.. MacroCommand
+AbstractCommand <|-- AttackCommand
+AbstractCommand <|-- MoveCommand
+AbstractCommand <|-- TakeCommand
+AbstractCommand <|-- DropCommand
+AbstractCommand <|-- UseItemCommand
+MacroCommand "1" *-- "many" Command : children
+CommandHistory "1" o-- "many" Command : undoStack
+CommandParser --> CommandFactory : registry
+AbstractCommand --> TurnSnapshot : before
+
+%% World & Context Connections
+GameWorld "1" *-- "many" DungeonLevel
+DungeonLevel "1" *-- "many" Room
+Room "1" *-- "many" Monster
+Room "1" *-- "many" Item
+Room "1" o-- "0..1" Chest
+Player "1" *-- "many" Item : inventory
+Chest "1" *-- "many" Item : contents
+GameContext --> GameWorld
+GameContext --> Player
+GameContext --> Combat
+GameContext --> EventBus
+GameContext --> CommandHistory
+GameContext --> Room : currentRoom
