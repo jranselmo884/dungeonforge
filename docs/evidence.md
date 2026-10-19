@@ -11,18 +11,33 @@ grep -rn "hasLivingMonsters" src/main/java/dungeonforge/commands/
 **Paste it. How many command classes re-implement the same check?**
 
 ```
-
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ grep -rn "hasLivingMonsters" src/main/java/dungeonforge/commands/
+src/main/java/dungeonforge/commands/CommandParser.java:172:        if (room.hasLivingMonsters()) {
+src/main/java/dungeonforge/commands/MoveCommand.java:19:        if (room().hasLivingMonsters()) {
+src/main/java/dungeonforge/commands/TakeCommand.java:13:        if (room().hasLivingMonsters()) {
+src/main/java/dungeonforge/commands/DropCommand.java:21:        if (room().hasLivingMonsters()) {
 ```
 
 **Play a turn: start a fight, then type `north`. Paste what happens:**
 
 ```
+hit
+[HP 78/80] > 
+  You hit Ghoul for 10.
+  Ghoul changes tactics: hunting -> enraged.
+  Ghoul hits you for 3.
+
+n
+[HP 75/80] > 
+  You cannot walk away with enemies still standing.
+
 
 ```
 
-**Now type `help` during that fight. Does it list `north`?** ____
+**Now type `help` during that fight. Does it list `north`?** _Yes_
 **Should it?**
 
+It technically should not, because we cannot move while in a fight.
 
 ### Problem B: the monster lifecycle as a string plus conditionals
 
@@ -33,7 +48,10 @@ grep -n "getStateName" src/main/java/dungeonforge/core/Combat.java
 **Paste it. Which three methods branch on the state name?**
 
 ```
-
+grep -n "getStateName" src/main/java/dungeonforge/core/Combat.java
+65:        String current = m.getStateName();
+109:        String state = m.getStateName();
+147:        if (m.getStateName().equals("enraged")) {
 ```
 
 **Answer before you refactor:**
