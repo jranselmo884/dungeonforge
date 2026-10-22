@@ -5,9 +5,7 @@ import dungeonforge.core.GameWorld;
 import dungeonforge.core.Player;
 import dungeonforge.core.Room;
 import dungeonforge.events.EventBus;
-import dungeonforge.states.CombatState;
-import dungeonforge.states.ExploringState;
-import dungeonforge.states.GameState;
+import dungeonforge.states.*;
 
 import java.util.List;
 
@@ -51,13 +49,11 @@ public class GameContext {
     }
 
     public void syncState() {
-        /* TODO:
         if (!player.isAlive() || !running) {
             transitionTo(new GameOverState());
             return;
         }
         if (state instanceof InventoryState) return;
-        */
 
         if (currentRoom.hasLivingMonsters()) transitionTo(new CombatState());
         else transitionTo(new ExploringState());
@@ -75,6 +71,10 @@ public class GameContext {
     public boolean isRunning()           { return running; }
     public void stop()                   { this.running = false; }
     public GameState getState() { return state; }
+
+    public void openPack() { transitionTo(new InventoryState()); }
+    public void closePack() { transitionTo(new ExploringState()); }
+
     /** After a turn-ending command, the monsters get their round. */
     public void runMonsterTurns() {
         if (player.isAlive()) combat.monsterTurns(player, currentRoom);
