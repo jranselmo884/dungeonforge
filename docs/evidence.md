@@ -177,11 +177,68 @@ chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$
 **Paste the test output (or a demo) showing a healer that becomes aggressive when enraged:**
 
 ```
-
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ mvn test
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/usr/share/maven/lib/guava.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< edu.redwoods.cis18:dungeonforge >-------------------
+[INFO] Building DungeonForge 0.7.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ dungeonforge ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:compile (default-compile) @ dungeonforge ---
+[INFO] Recompiling the module because of added or removed source files.
+[INFO] Compiling 71 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ dungeonforge ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/chemito/IdeaProjects/dungeonforge/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:testCompile (default-testCompile) @ dungeonforge ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 6 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ dungeonforge ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running dungeonforge.CommandTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.101 s -- in dungeonforge.CommandTest
+[INFO] Running dungeonforge.SkeletonTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in dungeonforge.SkeletonTest
+[INFO] Running dungeonforge.StateTest
+[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.040 s -- in dungeonforge.StateTest
+[INFO] Running dungeonforge.SingletonTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in dungeonforge.SingletonTest
+[INFO] Running dungeonforge.FactoryTest
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in dungeonforge.FactoryTest
+[INFO] Running dungeonforge.StrategyObserverTest
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in dungeonforge.StrategyObserverTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 86, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.380 s
+[INFO] Finished at: 2026-10-23T01:13:10-07:00
+[INFO] ------------------------------------------------------------------------
 ```
 
 **In one sentence: which one changed the other, and could it have gone the other way?**
 
+When the state changes, it changes the strategy as well. We confirmed with the unit tests that a strategy change does 
+not change a state.
 
 ## 5. Tests and CI
 
@@ -197,3 +254,7 @@ chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$
 
 > What can the project do now that it could not do last week?
 
+This week we added the State pattern to encapsulate the GameState so that only certain commands are available during each
+state and we could display only those commands to the player. We also encapsulated the MonsterStates so that a monster 
+will change state and strategy when needed and using the state pattern also ensures the monster's lifecycle can only go in the intended order, and Combat does not know what the states 
+themselves.
