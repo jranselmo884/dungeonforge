@@ -15,9 +15,9 @@
 
 | Sprint | Committed | Completed |
 |---|---|---|
-| Sprint 3 (Wk 5) | 10 | ____ |
+| Sprint 3 (Wk 5) | 10 | _12_ |
 | Sprint 4 (Wk 6, catch-up) | — | ____ |
-| Sprint 5 (Wk 7) | 10 | ____ |
+| Sprint 5 (Wk 7) | 10 | _10_ |
 
 **If Sprint 5 came in under 8, drop US-6.2 and say so in your retro.** The pack screen is the
 most self-contained story here and the sprint still demonstrates State without it.
@@ -66,12 +66,16 @@ most self-contained story here and the sprint still demonstrates State without i
 
 | Story | Estimated | Actual hours | High, low, about right? |
 |---|---|---|---|
-| US-6.1 | 4 | | |
-| US-6.2 | 2 | | |
-| US-6.3 | 3 | | |
-| US-6.4 | 1 | | |
+| US-6.1 | 4 | 4|about right |
+| US-6.2 | 2 | 2|about right |
+| US-6.3 | 3 |5 |low |
+| US-6.4 | 1 | 1| about right|
 
-**Points completed:** ____ · **Running velocity:** ____
+**Points completed:** _10_ · **Running velocity:** _10_
 
 ## Sprint Review — one sentence
 
+This sprint was rough not so much because of the comprehension but because of my personal time management. I attended 
+the AES conference with my partner in LA and the driving took more out of me and my shoulder than expected. It made it 
+difficult to type for more than a few hours at a time. I do think overall this sprint was manageable because of the
+similarities to the strategy pattern and how well this pattern goes hand in hand with the strategy pattern.
