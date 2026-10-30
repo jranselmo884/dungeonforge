@@ -4,10 +4,8 @@ import dungeonforge.behavior.SkittishStrategy;
 import dungeonforge.core.Monster;
 import dungeonforge.core.Player;
 
-public class FleeingState implements MonsterState{
-
+public class FleeingState implements MonsterState {
     public static final double DAMAGE_DEFICIT = 0.5;
-
 
     @Override
     public void onEnter(Monster self) {
@@ -20,7 +18,7 @@ public class FleeingState implements MonsterState{
 
     @Override
     public MonsterState next(Monster self, Player player) {
-        if (!self.isAlive()) return new DeadState();
+        if(!self.isAlive()) return new DeadState();
         return this;
     }
 

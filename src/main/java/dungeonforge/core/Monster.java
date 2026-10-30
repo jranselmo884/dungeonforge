@@ -59,6 +59,9 @@ public class Monster extends Entity {
         next.onEnter(this);
     }
 
+    /**
+    * Only TurnSnapshot should call this. Anything else is a transition and belongs above.
+    */
     public void restoreState(MonsterState previous) {
         if (previous != null) this.stateName = previous;
     }
@@ -69,6 +72,6 @@ public class Monster extends Entity {
     @Override
     public String describe() {
         return species + " (" + hp + "/" + maxHp + " HP, ATK " + attackPower
-                + ", " + stateName + ")";
+                + ", " + stateName.label() + ")";
     }
 }
