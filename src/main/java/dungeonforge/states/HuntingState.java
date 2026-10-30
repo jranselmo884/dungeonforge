@@ -10,15 +10,15 @@ public class HuntingState implements MonsterState {
 
     @Override
     public MonsterState next(Monster self, Player player) {
-        if (!self.isAlive()) return new DeadState();
+        if(!self.isAlive()) return new DeadState();
 
         double flee = GameConfig.getInstance().getDouble("fleeThreshold");
         double enrage = GameConfig.getInstance().getDouble("enrageThreshold");
 
         if (self.hpFraction() < flee) return new FleeingState();
         if (self.hpFraction() < enrage) return new EnragedState();
-        return this;
 
+        return this;
     }
 
     @Override public String label() { return "hunting"; }
