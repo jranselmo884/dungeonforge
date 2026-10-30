@@ -43,6 +43,6 @@ public abstract class WeaponDecorator implements Weapon{
     public String describe() {
        return getName() + " [dmg " + getDamage() + "]"
                + (lifesteal() > 0 ? " [drain " +lifesteal() + "]" : "")
-               + " (" + String.format("%.1f", getWeight()) + "kg, " + getValue() + "g";
+               + " (" + String.format("%.1f", getWeight()) + "kg, " + getValue() + "g)";
     }
 }
