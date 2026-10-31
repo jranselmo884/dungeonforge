@@ -14,10 +14,10 @@
 
 | Sprint | Committed | Completed |
 |---|---|---|
-| Sprint 3 (Wk 5) | 10 | ____ |
-| Sprint 5 (Wk 7) | 10 | ____ |
-| Sprint 6 (Wk 8) | 12 | ____ |
-| **Sprint 7 (Wk 9)** | **11** | ____ |
+| Sprint 3 (Wk 5) | 10 | __10__ |
+| Sprint 5 (Wk 7) | 10 | __10__ |
+| Sprint 6 (Wk 8) | 12 | __12__ |
+| **Sprint 7 (Wk 9)** | **11** | __11__ |
 
 ## Committed stories
 
