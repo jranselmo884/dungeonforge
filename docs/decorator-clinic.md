@@ -21,7 +21,7 @@ you must edit, and every *line* within each file.
 
 | File | Line(s) | What the edit is |
 |---|---|---|
-| | | |
+| 4, FlamingWeapon, FlamingFrostWeapon, FlamingVapmiricWeapon, and FlamingFrostVapmiricWeapon| 1 per file | Changing the fire bonus in each file |
 
 **Step 3.** Now the question that matters. `FlamingFrostWeapon` needs the fire arithmetic because
 it is a flaming weapon. It inherits from `Weapon`, which does not have it. It cannot inherit from
@@ -29,11 +29,15 @@ it is a flaming weapon. It inherits from `Weapon`, which does not have it. It ca
 
 **In one sentence: which language rule forced the duplication?**
 
+The java's inheritance model of one inheritance per class forced class explosion under the pre-decorator dungeonforge.
+
 **Step 4.** Head First, p. 86, says inheritance is "powerful but... not necessarily the best way
 to achieve flexibility." Rewrite that sentence as a specific claim about this package, with your
 number from Step 1 in it.
 
-> *Answer:* ________________________________________________
+> *Answer:* By changing from inheritance to composition we rid ourselves of the hierarchy of inheritance and have has-a 
+> relationships between the decorators which can then wrap the base object or other decorators in any other. We can have 
+> Flaming Keen Sword or Keen Flaming Sword without having to hard code for both.
 
 ---
 
@@ -41,13 +45,21 @@ number from Step 1 in it.
 
 **Step 1.** In the running game, enchant a weapon with `flaming` twice. Record the message.
 
-**Step 2.** Open `EnchantmentForge.enchant()` and find the line that produced it. Paste it.
+**Step 2.** Open `EnchantmentForge.enchant()` and find the line that produced it. Paste it. 
+
+new FlamingWeapon();
 
 **Step 3.** Answer three questions in one sentence each.
 
 1. Is a twice-flaming weapon unreasonable as a *game* idea?
+
+I think as a game idea it can be reasonable, by twice-flaming a weapon we add more power to it and give the player a better chance at the game.
 2. Is it unreasonable as a *code* idea?
-3. What, precisely, is the refusal actually reporting?
+
+As a code idea is it not unreasonable because as a developer we should implement code with the Open/Closed principle in mind, having decorators to keep code open to extension makes more sense. Guards can be placed on enchantment limits with that in mind if needed.
+3. What, precisely, is the refusal actually reporting? 
+
+The refusal is actually reporting that we do not have a class that is FlamingFlamingWeapon and we have do not have a way to account for enchantment depth.
 
 **Step 4.** Count the branches that exist purely to say no.
 
@@ -94,13 +106,16 @@ git diff --stat HEAD~1
 
 | | Starter design | Decorator design |
 |---|---|---|
-| New files | | |
-| Modified files | | |
-| Lines added to modified files | | |
-| `instanceof` count afterwards | | |
+| New files | 8|1 |
+| Modified files |2 |1 |
+| Lines added to modified files | 16|1 |
+| `instanceof` count afterwards | 8| 0|
 
 **Step 4.** One sentence: what is the *shape* of each design's growth curve? Use the words
 "linear" and "exponential" correctly, or do not use them at all.
+
+The starter design had exponential growth on its classes with every new added enchantment, while the Decorator design
+has linear growth as we are only adding one class for each enchantment. 1 to 1.
 
 ---
 
@@ -116,10 +131,10 @@ grep -rln "getAttackPower\|lifesteal" src/main/java/dungeonforge/core/
 
 | File | Lines changed this sprint |
 |---|---|
-| `core/Combat.java` | |
+| `core/Combat.java` | 0|
 | `core/Player.java` | |
 | `core/Entity.java` | |
-| `commands/EquipCommand.java` | |
+| `commands/EquipCommand.java` |0 |
 
 **Step 3.** Explain the small numbers. Your answer should use the phrase "programs to the
 interface" and should name *which* interface.
@@ -129,6 +144,10 @@ had to fix yourself. Name it and say why the pattern was never going to help.
 
 > There is a specific answer and it is in `EnchantCommand`. If you cannot find it, reread the
 > sub-task list for US-7.2 — one of the tasks has a note under it saying exactly this.
+
+The decorator pattern gave us unlimited stackable enchantments and allowed us to stack multiplies of the same
+enchantment type and what the decorator pattern did not give us was a way for the game to not "reequip" the same weapon
+that is already being held.
 
 ---
 
