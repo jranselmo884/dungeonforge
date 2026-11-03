@@ -1,78 +1,106 @@
-# DungeonForge
+# Lab 9 — Decorator — Starter
 
-CIS-18 semester project — a turn-based dungeon crawler built one design pattern at a time.
-
-Textbook: Freeman & Robson, *Head First Design Patterns*, 2nd ed.
-
-## Status
-
-**Week 2 — walking skeleton.** The program compiles, runs, prints a banner and passes its
-tests. There is no game yet. That starts in Week 3 with the Singleton.
-
-## Run it
+This is your own Week 8 repo, moved forward one week, with this week's problem planted in it.
+Everything you built in Weeks 3, 4, 5, 7 and 8 is still here and still passing: **86 tests,
+green, before you touch anything.** Run them first.
 
 ```bash
-mvn test          # should be green
-mvn exec:java     # prints the banner
+mvn test                      # expect 86 passing
+mvn -q exec:java
 ```
 
-Requires **JDK 21**.
+---
 
-## Project process
+## Provided for you this week
 
-| Thing | Where |
+| Thing | Why |
 |---|---|
-| Definition of Done | `docs/definition-of-done.md` *(supplied)* |
-| Product backlog | `docs/backlog.md` *(supplied)* and GitHub Issues |
-| This week's sprint | `docs/sprint-00-plan.md` *(supplied)* |
-| Next week's sprint | `docs/sprint-01-plan.md` *(supplied)* |
-| Board | GitHub Projects |
-| Retrospectives | `docs/retro/` |
-| Backlog seeding | `bash scripts/seed-backlog.sh` |
+| `Player.equippedWeapon`, `equip()`, `unequip()`, the `getAttackPower()` override | So a weapon can matter. **This is the feature you costed out in Week 7's evidence sheet** — go and compare your prediction with the real invoice; the note in `Player.java` walks through it. |
+| `EquipCommand` + one `register()` + one `alias()` | The wiring half of that same prediction. Four lines. |
+| `Combat`'s lifesteal line in `playerStrikes()` | One line, and it will still be one line at the end of the week no matter how many enchantments exist. The damage calculation did not change at all. |
+| A **Notched Shortsword** in your starting inventory | So Part 0 works on turn one instead of waiting for a loot drop. |
+| `EnchantCommand` | A verb that half works. Read its failure messages. |
+| Seven enchanted weapon classes | **This is the problem.** |
+| `EnchantmentForge` | And this is the other half of it. |
 
-> Through Week 5 the Agile artifacts are **supplied**, and your job is to run the sprint and
-> read them critically. You write your first user stories in Week 6, once you have read
-> about fifteen good ones.
+**Two tidy-ups you will notice in the diff.** `Combat.java` had three `TODO(week 8)` comments
+describing an `updateMonsterState()` method and a string state field — neither of which exists
+any more, because your State refactor removed them. Comments that outlive their code are worse
+than no comments, so they are gone. `GameState.java` also had an unused `import`. Neither is a
+design change.
 
-### Branch naming
+## The problem
+
+Three enchantments — flaming, frost, vampiric — are modelled as one class per **combination**.
 
 ```
-week-NN-pattern     pattern work        e.g. week-03-singleton
-feature/<name>      a capability
-fix/<name>          a defect
-chore/<name>        build, CI, tooling
-docs/<name>         documentation
+Weapon
+├── FlamingWeapon
+├── FrostWeapon
+├── VampiricWeapon
+├── FlamingFrostWeapon
+├── FlamingVampiricWeapon
+├── FrostVampiricWeapon
+└── FlamingFrostVampiricWeapon
 ```
 
-### Commit messages
+Seven classes for three enchantments, because 2³ − 1 = 7. The fire arithmetic appears in **five
+files**. `EnchantmentForge` is a 108-line ladder of **34 type tests** with **13 `return null`
+paths**, and it exists only to answer *"what is this weapon already, and what class does it
+become?"* — plus two more hand-written tables that subtract the bonuses back off so the next
+class up can be rebuilt from scratch.
 
-[Conventional Commits](https://www.conventionalcommits.org/): `feat:` `fix:` `docs:`
-`test:` `refactor:` `chore:`
+Four things are broken because of it, and Part 0 of `docs/evidence.week9.md` asks you to
+reproduce all four:
 
-### The weekly loop
+1. **Enchanting the weapon in your hand does nothing to your damage.** Enchanting builds a
+   *different object*; your hand still holds the old one.
+2. **You cannot apply the same enchantment twice.** There is no class for it.
+3. **You cannot add a fourth enchantment** without writing eight more classes.
+4. **Changing the fire bonus means editing five files**, and nothing will tell you if you miss
+   one.
 
-1. Pull the top story off the Sprint Backlog
-2. `git switch -c week-NN-pattern`
-3. Build it in small commits
-4. Open a PR — the template *is* the Definition of Done
-5. Wait for CI to go green
-6. Self-review, merge, tag
-7. Retro
+Only (2), (3) and (4) are the pattern's fault. **(1) is an ordinary bug that you will fix by
+hand, and Decorator will not help you find it.** Keeping those two categories apart is worth
+marks in Part D4.
 
-## Pattern map
+## What you are building
 
-Filled in as the semester goes. By Week 16 this table is the portfolio piece.
+`docs/sprint-07-plan.md` — five stories, acceptance criteria and sub-tasks, all supplied. Note
+that the sprint opens with **US-6.7, carried over from Sprint 6**: one point of debt that has
+nothing to do with Decorator. Read the `[AC*]` tag on each sub-task; mapping criteria to tasks
+is the thing being practised.
 
-| Week | Pattern | Where it lives | Why it fits |
-|---|---|---|---|
-| 3 | Singleton | | |
-| 4 | Factory Method / Abstract Factory | | |
-| 5 | Strategy / Observer | | |
-| 7 | Command | | |
-| 8 | State | | |
-| 9 | Decorator | | |
-| 10 | Template Method | | |
-| 12 | Adapter / Facade | | |
-| 13 | Composite / Iterator | | |
-| 14 | Pipeline / Proxy | | |
-| 15 | MVC (compound) | | |
+```
+Weapon (interface)
+├── BasicWeapon
+└── WeaponDecorator (abstract, HAS-A Weapon)
+    ├── FlamingWeapon
+    ├── FrostWeapon
+    ├── VampiricWeapon
+    └── KeenWeapon        (US-7.3 -- the one you add to measure the cost)
+```
+
+Six classes for four enchantments, and the seventh enchantment would be the seventh class.
+Linear, not exponential. **The deliverable of US-7.1 is the deletion of four files**, not the
+creation of `WeaponDecorator`.
+
+## Order of work
+
+1. `docs/evidence.week9.md` Parts 0–2 — **before you write any code.** Graded.
+2. **US-6.7** — the Sprint 6 carry-over. One point, under an hour, unrelated to this week.
+3. US-7.1 — the decorator hierarchy, then the deletions.
+4. US-7.2 — the registry, then the two-line fix to the equipped hand.
+5. US-7.3 — the fourth enchantment, committed on its own so the `git diff --stat` is clean.
+6. US-7.4 — two tests and a paragraph.
+7. `docs/decorator-clinic.md` Parts D1–D4.
+
+## Definition of Done
+
+`docs/definition-of-done.md`, unchanged since Week 2.
+
+## A warning about branch hygiene
+
+US-7.3's acceptance criterion is a `git diff --stat`. If that commit contains anything besides
+`KeenWeapon.java` and one line of `EnchantmentRegistry.java`, the measurement is worthless and
+you will have to redo it. Commit US-7.2 fully before you start US-7.3.
