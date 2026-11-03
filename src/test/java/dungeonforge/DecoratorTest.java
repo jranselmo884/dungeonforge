@@ -183,9 +183,7 @@ class DecoratorTest {
         assertTrue(EnchantmentRegistry.known().contains("keen"));
     }
 
-
     // ================= US-7.4: =================
-
     @Test
     void orderChangesTheResultForMultiplyingDecorators() {
         int keenThenFire = new FlamingWeapon(new KeenWeapon(sword())).getDamage();
@@ -194,7 +192,7 @@ class DecoratorTest {
         assertEquals(16, keenThenFire);
         assertEquals(18, fireThenKeen);
         assertNotEquals(keenThenFire, fireThenKeen,
-                "If these were equal, order would not matter and this test would be pointless.");
+                "If these were equal, order would not matter nad this test would be pointless");
     }
 
     @Test
@@ -206,10 +204,8 @@ class DecoratorTest {
     @Test
     void twoVampiricLayersDrinkTwice() {
         assertEquals(4, new VampiricWeapon(new VampiricWeapon(sword())).lifesteal(),
-                "the inner drinks 2 from the base 8; the outer drinks 2 more and adds the inner's.");
-
+                "the inner drinks 2 from the base 8 ; the outer drinks 2 more and adds the inner's");
     }
-
 
     // ================= the payoff: Combat never learned any of this =================
 

@@ -28,7 +28,7 @@ public class EnchantCommand extends AbstractCommand {
         // "slag cleaver with flaming"  ->  split on the LAST " with "
         int at = args.toLowerCase().lastIndexOf(" with ");
         if (at < 0) {
-            bus().message("Try: enchant <weapon> with <" + String.join("|", EnchantmentRegistry.known() + ">"));
+            bus().message("Try: enchant <weapon> with <" + String.join("|", EnchantmentRegistry.known()) + ">");
             return false;
         }
         String target = args.substring(0, at).trim();
@@ -49,14 +49,13 @@ public class EnchantCommand extends AbstractCommand {
             return false;
         }
 
-
         before = w;
         after = EnchantmentRegistry.apply(enchantment, w);
         wasEquipped = (player().getEquippedWeapon() == w);
 
         player().removeItem(w);
         player().addItem(after);
-        if (wasEquipped) { player().equip(after); }
+        if(wasEquipped) { player().equip(after);}
         bus().message("The " + w.getName() + " is now " + after.describe());
 
         // KNOWN DEFECT (US-7.2). `result` is a DIFFERENT OBJECT. If the old weapon was the

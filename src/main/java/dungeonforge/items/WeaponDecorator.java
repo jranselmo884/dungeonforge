@@ -2,11 +2,10 @@ package dungeonforge.items;
 
 import java.util.Objects;
 
-public abstract class WeaponDecorator implements Weapon{
-
+public abstract class WeaponDecorator implements Weapon {
     protected final Weapon wrapped;
 
-    protected WeaponDecorator (Weapon wrapped) {
+    protected WeaponDecorator(Weapon wrapped) {
         this.wrapped = Objects.requireNonNull(wrapped, "a decorator must wrap something!");
     }
 
@@ -43,8 +42,8 @@ public abstract class WeaponDecorator implements Weapon{
 
     @Override
     public String describe() {
-       return getName() + " [dmg " + getDamage() + "]"
-               + (lifesteal() > 0 ? " [drain " +lifesteal() + "]" : "")
-               + " (" + String.format("%.1f", getWeight()) + "kg, " + getValue() + "g)";
+        return getName() + " [dmg " + getDamage() + "]"
+                + (lifesteal() > 0 ? " [drain " + lifesteal() + "]" : "")
+                + " (" + String.format("%.1f", getWeight()) + "kg, " + getValue() + "g";
     }
 }

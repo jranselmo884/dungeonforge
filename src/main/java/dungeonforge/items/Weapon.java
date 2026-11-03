@@ -14,12 +14,11 @@ package dungeonforge.items;
  */
 public interface Weapon extends Item {
 
-
     int getDamage();
 
     /**
      * WEEK 9 STARTER -- hit points restored to the wielder when this weapon lands a blow.
      * Zero for an ordinary weapon. Combat calls this after every player strike.
      */
-    default public int lifesteal() { return 0; }
+    default int lifesteal() { return 0; }
 }
