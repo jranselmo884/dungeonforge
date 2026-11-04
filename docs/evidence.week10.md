@@ -55,32 +55,106 @@ mvn -q exec:java -Dexec.args="--report --seed=3"
 mvn -q exec:java -Dexec.args="--report --seed=7"
 ```
 
-**How many tests pass?** ______
+**How many tests pass?** ___110___
 
 **Paste all three dungeon reports:**
 
 ```
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ mvn -q exec:java -Dexec.args="--report"
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/usr/share/maven/lib/guava.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+=========================================
+        D U N G E O N F O R G E
+  A Head First Design Patterns project
+=========================================
+  version 0.10.0   seed 20260818
 
+
+  DUNGEON REPORT
+  ------------------------------------------------------------------
+  LEVEL  THEME         ROOMS  ORPHANS   SPAWN   EXIT
+  ------------------------------------------------------------------
+  1      Crypt             8        0       0    yes
+  2      Forge             8     4 !!       0    yes
+  3      Frost             8        0       0    yes
+  4      Winterfell        8        0       0    n/a
+  ------------------------------------------------------------------
+  orphaned rooms: 4   spawn-camped levels: 0   unreachable exits: 0
+  AT LEAST ONE LEVEL IS BROKEN. Which builder produced it, and what did it skip?
+
+
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ mvn -q exec:java -Dexec.args="--report --seed=3"
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/usr/share/maven/lib/guava.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+=========================================
+        D U N G E O N F O R G E
+  A Head First Design Patterns project
+=========================================
+  version 0.10.0   seed 3
+
+
+  DUNGEON REPORT
+  ------------------------------------------------------------------
+  LEVEL  THEME         ROOMS  ORPHANS   SPAWN   EXIT
+  ------------------------------------------------------------------
+  1      Crypt             8        0       0    yes
+  2      Forge             8     4 !!       0    yes
+  3      Frost             8        0    1 !!    yes
+  4      Winterfell        8        0       0    n/a
+  ------------------------------------------------------------------
+  orphaned rooms: 4   spawn-camped levels: 1   unreachable exits: 0
+  AT LEAST ONE LEVEL IS BROKEN. Which builder produced it, and what did it skip
+  
+  chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ mvn -q exec:java -Dexec.args="--report --seed=7"
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/usr/share/maven/lib/guava.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+=========================================
+        D U N G E O N F O R G E
+  A Head First Design Patterns project
+=========================================
+  version 0.10.0   seed 7
+
+
+  DUNGEON REPORT
+  ------------------------------------------------------------------
+  LEVEL  THEME         ROOMS  ORPHANS   SPAWN   EXIT
+  ------------------------------------------------------------------
+  1      Crypt             8        0       0    yes
+  2      Forge             8     5 !!       0  NO !!
+  3      Frost             8        0       0    yes
+  4      Winterfell        8        0       0    n/a
+  ------------------------------------------------------------------
+  orphaned rooms: 5   spawn-camped levels: 0   unreachable exits: 1
+  AT LEAST ONE LEVEL IS BROKEN. Which builder produced it, and what did it skip?
 ```
 
 **How many of the four levels satisfy every invariant, on each seed?**
-default: ______   seed 3: ______   seed 7: ______
+default: ___3___   seed 3: ___2___   seed 7: ___3(cannot reach the last 2)___
 
 **Seed 7 shows a symptom the other two do not.** Look at the EXIT column. What does it mean for
 a player who reaches that level?
 
+A player who reaches the Forge level when the seed is 7 will not be able to leave the room and advance to the Winterfell level
 
 **Now put the test count and the default-seed result in one sentence.** *(This is the most
 important sentence you will write this week. Two points.)*
 
-> ____________________________________________________________________
+> While all of our unit tests passed we had an invariant in the Forge level with 4 orphans left behind after we leave the level. 
 
 **The three reports disagree. Why?** *(Look at what decides whether a room gets monsters. Then say
 what that implies about how long a bug like this can survive.)*
 
+The reports disagree because each seed exposes a different bug with the level and monster creations. A bug like this could survive this long because we have similar algorithms which have drifted into conflicts, something we probably can fix with the template pattern.
 
 **What does all of this tell you about the test suite you have been building for eight weeks?**
 
+Our test suite, specifically the creation unit tests did not test for orphaned rooms and monsters. We did not account for this mismatch of states and rooms when implentmented undo as well.
 
 ---
 
@@ -93,26 +167,30 @@ them side by side in two editor windows.
 
 | Step | Corridor | Cave | Ring |
 |---|---|---|---|
-| 1. create the rooms | | | |
-| 2. connect them | own shape | own shape | own shape |
-| 3. entrance flavour | | | |
-| 4. populate — **which index does the loop start at?** | | | |
-| 5. prune unreachable rooms | | | |
+| 1. create the rooms |r = 0 | r = 1|r = 0 |
+| 2. connect them | linked in a north/south fashion | linked randomly | linked in a circular coridor |
+| 3. entrance flavour |room.get(0) | room.get(0)| room.get(0)|
+| 4. populate — **which index does the loop start at?** |r = 1 | r = 1|r = 0 |
+| 5. prune unreachable rooms |Yes | No| Yes|
 
-**Which step is genuinely different between the three?** ______
+**Which step is genuinely different between the three?** ___2___
 
 **Which differences are NOT about the shape of the level?**
+
+
 
 
 **For each, say what the consequence is for a player:**
 
 | Drift | What the player experiences |
 |---|---|
-| | |
-| | |
+| populate starting at different indexes| orphaned rooms, disconnected rooms|
+|cave missing the pruneUnreachable() method |unable to advance levels or rooms |
 
 **Neither of these is a typo. Both are what happens when one algorithm exists in three copies. In
 one sentence: why did the compiler not help?**
+
+The compiler did not help because we wrote the steps separately and did not enforce the order/steps, as we saw in the textbook we need the template pattern to make sure an order/algorithm stays untouched and "final"
 
 
 **A faster way to find this class of bug, which you should keep:**
@@ -123,6 +201,14 @@ grep -n 'for (int r = [01]; r < rooms.size(); r++)' src/main/java/dungeonforge/c
 
 **Paste the output. What does the pattern of 0s and 1s tell you?**
 
+````bash
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ grep -n 'for (int r = [01]; r < rooms.size(); r++)' src/main/java/dungeonforge/core/GameWorld.java
+96:        for (int r = 1; r < rooms.size(); r++) {
+120:        for (int r = 1; r < rooms.size(); r++) {
+133:        for (int r = 1; r < rooms.size(); r++) {
+180:        for (int r = 0; r < rooms.size(); r++) {
+````
+The 0 and 1s tell us that we have an invariant which will cause unintended behavior.
 
 ---
 
@@ -138,12 +224,12 @@ grep -c 'switch (d % ' src/main/java/dungeonforge/core/GameWorld.java
 
 | | Before | After |
 |---|---|---|
-| `GameWorld.java` lines | | |
-| times room creation is written | | |
-| times entrance flavour is written | | |
-| times the populate loop is written | | |
-| `switch` statements over level shape | | |
-| levels satisfying every invariant (seed 3) | | |
+| `GameWorld.java` lines |269 | |
+| times room creation is written |3 | |
+| times entrance flavour is written |3 | |
+| times the populate loop is written |4 | |
+| `switch` statements over level shape |1 | |
+| levels satisfying every invariant (seed 3) |2 of 4 | |
 
 *(Fill the After column at the end of the sprint. Nothing in it may be a guess.)*
 
