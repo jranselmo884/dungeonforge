@@ -1,6 +1,5 @@
 package dungeonforge.generate;
 
-import dungeonforge.config.RandomSource;
 import dungeonforge.core.DungeonLevel;
 import dungeonforge.core.Room;
 
@@ -12,14 +11,23 @@ public class CaveGenerator extends LevelGenerator {
     protected void connectRooms(DungeonLevel level) {
         // --- step 2: connect them -- each room links back to a random earlier room ---
         List<Room> rooms = level.getRooms();
-        String[] dirs = { "north", "south" };
         for (int r = 1; r < rooms.size(); r++) {
-            int back = RandomSource.getInstance().nextInt(r);
-            String dir = dirs[RandomSource.getInstance().nextInt(dirs.length)];
-            String rev = dir.equals("north") ? "south" : "north";
-            // Map-keyed exits: if this room already has an exit in `dir`, this OVERWRITES it.
-            rooms.get(back).link(dir, rooms.get(r));
-            rooms.get(r).link(rev, rooms.get(back));
+            attachToSomeEarlierRoom(rooms, r);
+        }
+    }
+
+    private void attachToSomeEarlierRoom(List<Room> rooms, int r) {
+        Room child = rooms.get(r);
+        for (int attempt = 0; attempt < r * DIRECTIONS.length * 2; attempt++) {
+            Room parent = rooms.get(rng().nextInt(r));
+            String dir = DIRECTIONS[rng().nextInt(DIRECTIONS.length)];
+            if (tryConnect(parent, dir, child)) return;
+        }
+        // deterministic deep room connect in case the above loop is unlucky.
+        for (int i = 0; i < r; i++) {
+            for (String dir : DIRECTIONS) {
+                if (tryConnect(rooms.get(i), dir, child)) return;
+            }
         }
     }
 
