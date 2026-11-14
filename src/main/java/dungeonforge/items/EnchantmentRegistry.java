@@ -26,7 +26,8 @@ public class EnchantmentRegistry {
 
     public static Weapon apply(String enchantment, Weapon weapon) {
         UnaryOperator<Weapon> spell = SPELLS.get(enchantment);
-        if (spell == null) { throw new IllegalArgumentException("No such enchantment: " + enchantment); }
+        if (spell == null) { throw new IllegalArgumentException("no such enchantment: " + enchantment); }
         return spell.apply(weapon);
     }
+
 }
