@@ -224,12 +224,12 @@ grep -c 'switch (d % ' src/main/java/dungeonforge/core/GameWorld.java
 
 | | Before | After |
 |---|---|---|
-| `GameWorld.java` lines |269 | |
-| times room creation is written |3 | |
-| times entrance flavour is written |3 | |
-| times the populate loop is written |4 | |
-| `switch` statements over level shape |1 | |
-| levels satisfying every invariant (seed 3) |2 of 4 | |
+| `GameWorld.java` lines |269 |137 |
+| times room creation is written |3 |0 |
+| times entrance flavour is written |3 |0 |
+| times the populate loop is written |4 | 1|
+| `switch` statements over level shape |1 |0 |
+| levels satisfying every invariant (seed 3) |2 of 4 |4 of 4 |
 
 *(Fill the After column at the end of the sprint. Nothing in it may be a guess.)*
 
@@ -240,29 +240,35 @@ grep -c 'switch (d % ' src/main/java/dungeonforge/core/GameWorld.java
 **Paste `git diff --stat HEAD~1` for the commit that added the fourth shape:**
 
 ```
-
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ git diff --stat
+ src/main/java/dungeonforge/generate/GeneratorRegistry.java |  1 +
+ src/main/java/dungeonforge/generate/SpokeGenerator.java    | 31 ++++++++++++++++++++++++++++++-
+ 2 files changed, 31 insertions(+), 1 deletion(-)
 ```
 
-**New files:** ______  **Modified files:** ______  **Lines added:** ______
+**New files:** ___1___  **Modified files:** ___1___  **Lines added:** ___31___
 
-**Is `GameWorld.java` in that diff?** ______ **Why not?**
+**Is `GameWorld.java` in that diff?** ___No___ **Why not?**
 
+No GameWorld.java is not in that diff because we only had to add a file for the spoke rooms, and it follows the template method generate() from LevelGenerator. Open/closed principle
 
 ### The other half of the receipt — what the old design would have cost
 
 **(a)** To add a spoke shape to the starter, which existing method would you have copied?
 *(Be honest — you would copy the one whose shape is closest, not the one that is correct.)*
 
-______
+___Ring___
 
-**(b)** Roughly how many lines would that have added to `GameWorld.java`? ______
+**(b)** Roughly how many lines would that have added to `GameWorld.java`? ___Similar length to the RingGenerator before the refactor.___
 
 **(c)** **The question that matters.** Look at the method you named in (a). Run the `grep` from
 Part 2 on it. Does it have any of the drift you catalogued?
 
-______
+___No___
 
 **So what would have happened to the new level's invariants?**
+
+The new levels invariants would not have inherited drift as the original class did not have any.
 
 
 **(d)** Now check your answer against reality. Your instructor measured it: the fourth shape was
@@ -274,18 +280,30 @@ went from 1 to 2, and **it compiled on the first attempt.**
 
 > Write the conclusion as a sentence with the word *propagate* in it.
 
+The fourth shape was added by using the RingGenerator as a template and by using the template pattern and keeping the generate method in LevelGenerator final and having that propagate the steps and their implementations.
+
 ---
 
 ## 5. AFTER — what you did not write
 
 Your fourth shape produces levels with no orphaned rooms and an empty entrance.
 
-**Find the reachability check in `SpokeGenerator.java`.** Where is it? ______
+**Find the reachability check in `SpokeGenerator.java`.** Where is it? 
 
-**Find the entrance guard in `SpokeGenerator.java`.** Where is it? ______
+Reachability is in the abstract class LevelGenerator.java, and we did not need to implement in spoke because it was inehrited. 
+
+______
+
+
+**Find the entrance guard in `SpokeGenerator.java`.** Where is it? 
+
+The entrance guard is in the Abstract base class and we didn't have implement because it was also inherited.
+______
 
 **In two or three sentences: explain how a class can satisfy an invariant it does not implement,
 and what had to be true of `generate()` for that to work.**
+
+A class can satisfy an invariant because they inherit the public generate method from their parent class. That method is also final to prevent the child classes from messing with the order, and those invariant steps are made final to prevent guarantee the order and behavior. 
 
 
 ---
@@ -296,9 +314,13 @@ Two of the starter's levels were broken. Both are fixed now.
 
 **Did you write a bug fix? Quote the lines if you did.**
 
+Not really, did a refactor and implemented to interface a bit
+
 
 **If you did not, describe what you actually did instead.** *(There is a precise way to say this,
 and it involves the word "deleted".)*
+
+We deleted most of the implementations of the original generator classes and rebuilt them with helper methods in mind to keep similar room linking from drifting between the generator classes varying steps.
 
 
 ---
@@ -309,8 +331,11 @@ and it involves the word "deleted".)*
 building the decorators did not.
 
 
+When you unwrap decorators from a base object you have to make sure do the enchantment in reserve while still preserving the undo method and keeping the weapon that is in the players hand the same object as the disenchanted one.
 
 
 **One sentence on something Template Method gave you, and one on something it took away.** *(It
 does take something. Head First is clear about it on p. 302 — a subclass cannot change the order
 of the steps, and one day you will want to.)*
+
+The template method gives us a peace of mind when it comes to code drift for invariant operations. The template method does take away our ability to keep the invariant operations guaranteed while giving flexibility to the subclasses that need/want it.
