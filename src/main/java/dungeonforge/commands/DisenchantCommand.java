@@ -1,8 +1,8 @@
 package dungeonforge.commands;
 
+import dungeonforge.items.EnchantmentRegistry;
 import dungeonforge.items.Item;
 import dungeonforge.items.Weapon;
-
 
 public class DisenchantCommand extends AbstractCommand {
 
@@ -18,12 +18,12 @@ public class DisenchantCommand extends AbstractCommand {
 
         Item item = player().findItem(target);
         if (item == null) {
-            bus().message("You are not carrying anything like that.");
+            bus().message("You are not carrying anything lkie that.");
             return false;
         }
 
         if (!(item instanceof Weapon w)) {
-            bus().message("Only weapons can be disenchanted.");
+            bus().message("Only weapons can be disenchantment");
             return false;
         }
 
@@ -37,7 +37,7 @@ public class DisenchantCommand extends AbstractCommand {
 
         player().removeItem(w);
         player().addItem(peeled);
-        if(wasEquipped) { player().equip(peeled); }
+        if(wasEquipped) { player().equip(peeled);}
 
         bus().message("You strip the enchantment away. It is now " + peeled.describe());
         return true;

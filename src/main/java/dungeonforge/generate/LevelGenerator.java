@@ -1,5 +1,6 @@
 package dungeonforge.generate;
 
+import dungeonforge.config.GameConfig;
 import dungeonforge.config.RandomSource;
 import dungeonforge.core.DungeonLevel;
 import dungeonforge.core.Room;
@@ -23,13 +24,6 @@ public abstract class LevelGenerator {
         return level;
     }
 
-
-    //fixed operations: Template Pattern
-    private void createRooms(DungeonLevel level, int depth, int roomCount) {
-        for (int r = 0; r < roomCount; r++) level.addRoom(new Room("L" + depth + "R" + r));
-
-    }
-
     protected abstract void connectRooms(DungeonLevel level);
 
     public abstract String shapeName();
@@ -37,15 +31,19 @@ public abstract class LevelGenerator {
     protected void addShortcuts(DungeonLevel level) { }
     protected void decorate(DungeonLevel level, ThemeKit theme) { }
 
+    // Fixed Steps / Operations
+    private void createRooms(DungeonLevel level, int depth, int roomCount) {
+        for (int r = 0; r < roomCount; r++) level.addRoom(new Room("L" + depth + "R" + r));
+    }
+
     private void markEntrance(DungeonLevel level, ThemeKit theme) {
         if (level.getRooms().isEmpty()) return;
         level.getRooms().get(0).setFlavor(theme.createRoomFlavor());
-
     }
     private void populateRooms(DungeonLevel level, ThemeKit theme, int depth, boolean isFinalLevel) {
         List<Room> rooms = level.getRooms();
         for (int r = 1; r < rooms.size(); r++) {
-            boolean isBossRoom = isFinalLevel && (r == rooms.size() - 1);
+            boolean isBossRoom = isFinalLevel && ( r == rooms.size() - 1 );
             populatorFor(theme, isBossRoom).populate(rooms.get(r), depth);
         }
     }
@@ -58,7 +56,7 @@ public abstract class LevelGenerator {
         queue.add(rooms.get(0));
         seen.add(rooms.get(0));
         while (!queue.isEmpty()) {
-            for (Room next : queue.poll().getExits().values()) {
+            for ( Room next : queue.poll().getExits().values()) {
                 if (seen.add(next)) queue.add(next);
             }
         }
@@ -66,12 +64,12 @@ public abstract class LevelGenerator {
     }
 
     protected static void connect(Room a, String direction, Room b) {
-        a.link(direction, b);
-        b.link(opposite(direction), a);
+       a.link(direction, b);
+       b.link(opposite(direction), a);
     }
 
     protected boolean tryConnect(Room a, String direction, Room b) {
-        if (a == b) return  false;
+        if (a == b) return false;
         if (a.getExits().containsKey(direction)) return false;
         if (b.getExits().containsKey(opposite(direction))) return false;
         connect(a, direction, b);
@@ -81,10 +79,10 @@ public abstract class LevelGenerator {
     protected static final String[] DIRECTIONS = {"north", "south", "east", "west"};
 
     protected static String opposite(String direction) {
-        return switch (direction) {
+        return switch(direction) {
             case "north" -> "south";
             case "south" -> "north";
-            case "east" -> "west";
+            case "ease" -> "west";
             case "west" -> "east";
             default -> "south";
         };
@@ -103,5 +101,4 @@ public abstract class LevelGenerator {
         if (rng().nextDouble() < 0.30) return new TreasureRoomPopulator(theme);
         return new StandardRoomPopulator(theme);
     }
-
 }

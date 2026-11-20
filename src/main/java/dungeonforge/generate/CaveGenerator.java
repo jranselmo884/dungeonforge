@@ -6,10 +6,8 @@ import dungeonforge.core.Room;
 import java.util.List;
 
 public class CaveGenerator extends LevelGenerator {
-
     @Override
     protected void connectRooms(DungeonLevel level) {
-        // --- step 2: connect them -- each room links back to a random earlier room ---
         List<Room> rooms = level.getRooms();
         for (int r = 1; r < rooms.size(); r++) {
             attachToSomeEarlierRoom(rooms, r);
@@ -24,7 +22,7 @@ public class CaveGenerator extends LevelGenerator {
             if (tryConnect(parent, dir, child)) return;
         }
         // deterministic deep room connect in case the above loop is unlucky.
-        for (int i = 0; i < r; i++) {
+        for (int i=0; i < r; i++) {
             for (String dir : DIRECTIONS) {
                 if (tryConnect(rooms.get(i), dir, child)) return;
             }
@@ -35,7 +33,7 @@ public class CaveGenerator extends LevelGenerator {
     protected void addShortcuts(DungeonLevel level) {
         List<Room> rooms = level.getRooms();
         if (rooms.size() < 4) return;
-        int wanted = 1 + rng().nextInt(2);
+        int wanted  = 1 + rng().nextInt(2);
         int added = 0;
         for (int attempt = 0; attempt < 60 && added < wanted; attempt++) {
             Room a = rooms.get(rng().nextInt(rooms.size()));

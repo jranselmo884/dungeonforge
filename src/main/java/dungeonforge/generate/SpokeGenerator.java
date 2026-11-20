@@ -5,14 +5,14 @@ import dungeonforge.core.Room;
 
 import java.util.List;
 
-public class SpokeGenerator extends LevelGenerator{
+public class SpokeGenerator extends LevelGenerator {
 
     @Override
     protected void connectRooms(DungeonLevel level) {
         List<Room> rooms = level.getRooms();
         if (rooms.size() < 2) return;
 
-        Room hub = rooms.get(0);
+        Room hub =  rooms.get(0);
         Room[] armEnd = new Room[DIRECTIONS.length];
         for (int r = 1; r < rooms.size(); r++) {
             int arm = (r - 1) % DIRECTIONS.length;
