@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeneratorRegistry {
-
     private final List<LevelGenerator> shapes = new ArrayList<>();
 
     public GeneratorRegistry() {
@@ -14,7 +13,7 @@ public class GeneratorRegistry {
         shapes.add(new SpokeGenerator());
     }
 
-    public LevelGenerator forDepth(int depth) { return shapes.get((depth - 1) % shapes.size());}
+    public LevelGenerator forDepth(int depth) { return shapes.get((depth - 1) % shapes.size()); }
 
     public int size() { return shapes.size(); }
 
@@ -25,5 +24,4 @@ public class GeneratorRegistry {
         }
         return names;
     }
-
 }

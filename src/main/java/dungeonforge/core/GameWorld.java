@@ -45,8 +45,8 @@ public class GameWorld {
     private final Player player;
     private final MonsterFactory monsterFactory = new MonsterFactory();
     private final ThemeRegistry themes = new ThemeRegistry(monsterFactory);
-    private final List<DungeonLevel> levels = new ArrayList<>();
     private final GeneratorRegistry generators = new GeneratorRegistry();
+    private final List<DungeonLevel> levels = new ArrayList<>();
 
     public GameWorld(Player player) {
         this.player = player;
@@ -72,16 +72,7 @@ public class GameWorld {
         linkLevelsTogether();
     }
 
-
     // =====================================================================================
-
-    /**
-     * WEEK 10 STARTER (provided) -- breadth-first search from the entrance, then throw away
-     * anything it could not get to.
-     *
-     * There is nothing wrong with this method. The problem is that calling it is OPTIONAL, and
-     * one of the three builders above does not.
-     */
 
     /** The stairs between levels. The last room of each level leads down to the next. */
     private void linkLevelsTogether() {
