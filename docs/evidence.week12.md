@@ -208,6 +208,10 @@ python3 scripts/codeonly.py src/main/java/dungeonforge/factory/MonsterFactory.ja
 
 **Two of those commands are the deliverable. Which two, and why?**
 
+git diff src/main/java/dungeonforge/legacy/LegacyBestiary.java 
+git diff src/main/java/dungeonforge/factory/MonsterFactory.java 
+
+Both are the deliverable because we get nothing as an output, we have not changed these two files, we are using LegacyBestiaryAdapter to have them work together.
 
 **`blueprintCount()` before:** ______ **after:** ______
 
