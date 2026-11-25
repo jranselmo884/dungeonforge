@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TemplateMethodTest {
 
     private ThemeKit theme;
+    private final MonsterFactory monsterFactory = new MonsterFactory();
 
     @BeforeEach
     void setUp() {
@@ -223,7 +224,7 @@ class TemplateMethodTest {
 
     @Test
     void aGeneratedWorldSatisfiesEveryInvariantOnEveryLevel() {
-        GameWorld world = new GameWorld(new Player("Tester"));
+        GameWorld world = new GameWorld(new Player("Tester"), monsterFactory);
         for (DungeonLevel level : world.getLevels()) {
             assertEquals(0, DungeonReport.countOrphans(level),
                     "level " + level.getDepth() + " has orphaned rooms");
@@ -234,7 +235,7 @@ class TemplateMethodTest {
 
     @Test
     void everyLevelButTheLastHasAReachableStaircase() {
-        GameWorld world = new GameWorld(new Player("Tester"));
+        GameWorld world = new GameWorld(new Player("Tester"), monsterFactory);
         List<DungeonLevel> levels = world.getLevels();
         for (int i = 0; i + 1 < levels.size(); i++) {
             assertTrue(DungeonReport.stairsReachable(levels.get(i)),
@@ -244,7 +245,7 @@ class TemplateMethodTest {
 
     @Test
     void theWorldStillHasMonstersAndLootAfterAllThatPruning() {
-        GameWorld world = new GameWorld(new Player("Tester"));
+        GameWorld world = new GameWorld(new Player("Tester"), monsterFactory);
         assertTrue(world.totalMonsters() > 0);
         assertTrue(world.totalLoot() > 0);
     }
@@ -253,7 +254,7 @@ class TemplateMethodTest {
     @Test
     void theInvariantsHoldOnTheSeedThatExposedTheOldBugs() {
         RandomSource.getInstance().reseed(3L);
-        GameWorld world = new GameWorld(new Player("Tester"));
+        GameWorld world = new GameWorld(new Player("Tester"), monsterFactory);
         int orphans = 0, spawn = 0;
         for (DungeonLevel level : world.getLevels()) orphans += DungeonReport.countOrphans(level);
         spawn = world.startingRoom().getMonsters().size();
