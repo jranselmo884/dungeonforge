@@ -176,13 +176,13 @@ awk '/public static void main/{on=1} on{n++} on&&/^    }$/&&n>3{print n; exit}' 
 
 | | Before | After |
 |---|---|---|
-| `main()` lines | 191| |
-| `ctx.syncState()` in `Main` | 3| |
-| copies of the turn sequence | 3| |
-| `DamageMeter` mentioned outside its own file |0| |
-| listener classes subscribed, of 4 | 3| |
-| monster blueprints available |79 | |
-| a script can walk past a live hostile | yes| |
+| `main()` lines | 191| 133|
+| `ctx.syncState()` in `Main` | 3|0 |
+| copies of the turn sequence | 3| 0|
+| `DamageMeter` mentioned outside its own file |0| 1|
+| listener classes subscribed, of 4 | 3| 4|
+| monster blueprints available |19 |29 |
+| a script can walk past a live hostile | yes| no|
 
 *(Fill the After column at the end of the sprint. **Nothing in it may be a guess.**)*
 
@@ -203,13 +203,34 @@ python3 scripts/codeonly.py src/main/java/dungeonforge/factory/MonsterFactory.ja
 **Paste all four.**
 
 ```
-
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ git diff --stat HEAD~1
+ docs/evidence.week12.md                             |  14 ++++----
+ src/main/java/dungeonforge/Main.java                | 126 +++++++++++++++++-------------------------------------------------------
+ src/main/java/dungeonforge/core/GameWorld.java      |   8 +++--
+ src/main/java/dungeonforge/session/GameSession.java | 151 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/test/java/dungeonforge/AdapterFacadeTest.java   | 139 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ src/test/java/dungeonforge/CommandTest.java         |   8 +++--
+ src/test/java/dungeonforge/DecoratorTest.java       |   3 +-
+ src/test/java/dungeonforge/FactoryTest.java         |   8 ++---
+ src/test/java/dungeonforge/SingletonTest.java       |   7 ++--
+ src/test/java/dungeonforge/StateTest.java           |   8 +++--
+ src/test/java/dungeonforge/TemplateMethodTest.java  |   9 +++---
+ 11 files changed, 354 insertions(+), 127 deletions(-)
+ chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ git diff src/main/java/dungeonforge/legacy/LegacyBestiary.java
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ git diff src/main/java/dungeonforge/factory/MonsterFactory.java
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ python3 scripts/codeonly.py src/main/java/dungeonforge/factory/MonsterFactory.java \
+  | grep -ciE 'bestiary|csv|MOB_ID|HIT_DICE'
+0
 ```
 
 **Two of those commands are the deliverable. Which two, and why?**
 
+git diff src/main/java/dungeonforge/legacy/LegacyBestiary.java 
+git diff src/main/java/dungeonforge/factory/MonsterFactory.java 
 
-**`blueprintCount()` before:** ______ **after:** ______
+Both are the deliverable because we get nothing as an output, we have not changed these two files, we are using LegacyBestiaryAdapter to have them work together.
+
+**`blueprintCount()` before:** ___19___ **after:** ___29___
 
 ### US-9.2, the Facade
 
@@ -220,27 +241,44 @@ git diff --stat HEAD~1          # on the us-9.2 commit
 **Paste it.**
 
 ```
-
+chemito@chemito-Lenovo:~/IdeaProjects/dungeonforge$ git diff --stat HEAD~1
+ docs/evidence.week12.md                             |  35 ++++++++++++++------
+ src/main/java/dungeonforge/Main.java                | 126 +++++++++++++++++-------------------------------------------------------
+ src/main/java/dungeonforge/core/GameWorld.java      |   8 +++--
+ src/main/java/dungeonforge/session/GameSession.java | 151 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/test/java/dungeonforge/AdapterFacadeTest.java   | 139 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ src/test/java/dungeonforge/CommandTest.java         |   8 +++--
+ src/test/java/dungeonforge/DecoratorTest.java       |   3 +-
+ src/test/java/dungeonforge/FactoryTest.java         |   8 ++---
+ src/test/java/dungeonforge/SingletonTest.java       |   7 ++--
+ src/test/java/dungeonforge/StateTest.java           |   8 +++--
+ src/test/java/dungeonforge/TemplateMethodTest.java  |   9 +++---
+ 11 files changed, 373 insertions(+), 129 deletions(-)
 ```
 
 **One sentence each on what the two numbers mean.** *(They mean different things. One is about a
 format; one is about an order.)*
 
 
+
 ---
 
 ## 5. AFTER — what you did not have to change
 
-**List every file that learned a CSV exists.** ______
+**List every file that learned a CSV exists.** ___LegacyBeastiary, LegacyBeastiaryAdapter, GameSession___
 
-**Is `MonsterFactory` one of them?** ______
+**Is `MonsterFactory` one of them?** ___No___
 
 **`ThemeKit` picks which monsters appear in a room. How many lines of it did you change to make
-ten new monsters appear?** ______
+ten new monsters appear?** ___0___
 
 **In two or three sentences: explain how a class can use a blueprint that arrived from a file
 format it has never heard of.**
 
+By using our adapter pattern we were able to use the comparable parts of the beastiary.csv to match to the monster def 
+we already had. We had a match for most parts of a monster and had fallbacks for when we were missing data for whatever
+reason. Using composition we can pass a legacybeastiary as a monstersource to have the factory create monsters from the 
+beastiary.csv as well.
 
 ---
 
@@ -248,27 +286,33 @@ format it has never heard of.**
 
 ### The Adapter's honest half
 
-**`bestiary.csv` has no xp column. Which of the three options did you take?** ______
+**`bestiary.csv` has no xp column. Which of the three options did you take?** ___We derived it___
 
-**Where in your code does a reader find out that the number is derived?** ______
+**Where in your code does a reader find out that the number is derived?** ___translationNotes()___
 
 **One sentence: what would have gone wrong if you had silently defaulted it to 5?**
 
+Nothing inherently goes wrong if we default to 5, makes code less manageable if someone wants to change how xp scales, etc.
 
 **`SAPPER` has no counterpart. What did you do, and what happens when the eleventh unknown AI
 name arrives next semester?**
 
+We wrote a default branch to map it and any future unknowns to aggressive.
 
 ### The Facade's honest half
 
 **Complete this honestly:**
 
 > `GameSession` now knows about eight collaborators and the order they go together in, which
-> means the coupling ______________________________________________
+> means the coupling _________________________was moved to another object to 'own' and manage(GameSession) aka coding to
+an interface._____________________
 
 **Name one thing that got HARDER because `Main` no longer knows those eight classes.** *(There
 is a real answer. Think about what a test needs.)*
 
+Our unit tests broke when we moved the facade logic out of main and since we changed GameWorld to two parameters we had 
+to introduce a MonsterFactory variable for each test that called a GameWorld, and then add in the new parameter each time
+the tests were calling it.
 
 ---
 
@@ -279,10 +323,11 @@ Four sentences, and the two costs are not the same cost.
 
 | Pattern | Gave | Took |
 |---|---|---|
-| Adapter | | |
-| Facade | | |
+| Adapter |Use of older interface without modifying something that already works |Cannot translate everything 1:1 and we had to make up xp for the beastiary monsters |
+| Facade |one place for the GameSession to hold its eight collaborators |start method is approaching "god object" status as it builds everything |
 
 **And the one-sentence distinction, in your own words, having now written both:** Adapter and
 Facade are both "a class in front of other classes." What made them different in practice?
 
-
+The Adapter Pattern is a class that sits between two classes that normally cannot interface with each other directly,
+while the Facade Pattern puts the facade in front of all the logic classes it intends to manage in a specific way.

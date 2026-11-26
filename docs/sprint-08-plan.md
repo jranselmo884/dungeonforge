@@ -23,7 +23,7 @@
 | Sprint 5 (Wk 7) | 10 | ____ |
 | Sprint 6 (Wk 8) | 12 | ____ |
 | Sprint 7 (Wk 9) | 11 | ____ |
-| **Sprint 8 (Wk 10)** | **12** | ____ |
+| **Sprint 8 (Wk 10)** | **12** | __12__ |
 
 **Three of those Completed columns are empty, and that is now the problem.** Five sprints in,
 there is no measured velocity to plan against, so "capacity ~10" is still a guess from Week 5.
@@ -357,13 +357,13 @@ already have.
 
 | Story | Estimated | Actual hours | High, low, about right? |
 |---|---|---|---|
-| **US-7.5** (carry-over) | **2** | | |
-| US-8.1 | 4 | | |
-| US-8.2 | 3 | | |
-| US-8.3 | 1 | | |
-| US-8.4 | 2 | | |
+| **US-7.5** (carry-over) | **2** | 2|about right |
+| US-8.1 | 4 |7 |low |
+| US-8.2 | 3 | 1| high|
+| US-8.3 | 1 | 3| low|
+| US-8.4 | 2 | 3| low|
 
-**Points completed:** ____ · **Running velocity:** ____
+**Points completed:** __12__ · **Running velocity:** ____
 
 **Also fill in Sprint 7's row, retrospectively.** `docs/sprint-07-plan.md` has an empty
 calibration table and so do Sprints 3, 5 and 6. Five sprints with no actuals means nobody —
