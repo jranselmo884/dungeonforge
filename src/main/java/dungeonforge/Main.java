@@ -84,8 +84,6 @@ public final class Main {
         GameSession session = GameSession.start(name, new ConsolePrinter());
         for (String note : session.sourceReport()) System.out.println(" [sources] " + note);
 
-
-
         if (script != null) {
             for (String line : Files.readAllLines(Path.of(script))) {
                 if (line.isBlank() || line.startsWith("#")) continue;
@@ -116,7 +114,6 @@ public final class Main {
         System.out.println();
         System.out.println(session.epilogue());
     }
-
 
     /** The console view. It prints; nothing else does. */
     private static final class ConsolePrinter implements GameEventListener {

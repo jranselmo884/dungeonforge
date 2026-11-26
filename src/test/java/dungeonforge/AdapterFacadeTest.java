@@ -112,7 +112,7 @@ class AdapterFacadeTest {
                 .filter(s -> s.contains("no counterpart")).toList();
         assertEquals(1, unmapped.size(),
                 "the lossy conversion must be VISIBLE; an adapter that silently invents "
-                        + "behaviour is indistinguishable from one that read the file correctly");
+              + "behaviour is indistinguishable from one that read the file correctly");
         assertTrue(unmapped.get(0).contains("SAPPER"), unmapped.get(0));
     }
 
@@ -123,7 +123,7 @@ class AdapterFacadeTest {
         long derived = a.translationNotes().stream().filter(s -> s.contains("xp derived")).count();
         assertEquals(records, derived,
                 "bestiary.csv has no xp column, so EVERY xp value is derived and every one "
-                        + "of them has to say so");
+              + "of them has to say so");
     }
 
     @Test
@@ -186,7 +186,7 @@ class AdapterFacadeTest {
         GameSession session = GameSession.start("Tester");
         assertTrue(session.listenerCount() >= 5,
                 "quests, achievements, log, DAMAGE METER and the transcript; got "
-                        + session.listenerCount());
+              + session.listenerCount());
     }
 
     @Test
@@ -200,7 +200,7 @@ class AdapterFacadeTest {
         boolean warned = session.transcript().stream().anyMatch(s -> s.contains("DANGER"));
         assertTrue(warned,
                 "DamageMeter has existed since Week 5 and had never fired, because main() "
-                        + "never subscribed it. The facade owns the listener list now.");
+              + "never subscribed it. The facade owns the listener list now.");
     }
 
     @Test
@@ -211,7 +211,7 @@ class AdapterFacadeTest {
         RandomSource.resetForTests();
         assertTrue(hasLegacyMonster(GameSession.start("Tester").getWorld()),
                 "GameSession.start() must register every source BEFORE generating the world; "
-                        + "blueprints registered afterwards can never spawn");
+              + "blueprints registered afterwards can never spawn");
 
         RandomSource.resetForTests();
         assertTrue(hasLegacyMonster(GameSession.buildWorldOnly("Tester")),
@@ -261,12 +261,42 @@ class AdapterFacadeTest {
         Room before = ctx.getCurrentRoom();
         assertEquals("Combat", ctx.getState().name(),
                 "arriving beside a live hostile must put the game in combat mode -- the "
-                        + "scripted path used to skip this and the mode never changed");
+              + "scripted path used to skip this and the mode never changed");
 
         session.runLine("north");
         assertSame(before, ctx.getCurrentRoom(),
                 "combat mode has no movement verbs, so this must have been refused. Before "
-                        + "the facade, a script walked straight past every monster in the dungeon.");
+              + "the facade, a script walked straight past every monster in the dungeon.");
+    }
+
+    // ===================== US-9.3 : the replay receipt =====================
+
+    @Test
+    void theSameInputThroughTwoSessionsProducesIdenticalTranscripts() {
+        List<String> input = List.of("look", "north", "status", "attack", "attack", "look", "status");
+
+        RandomSource.resetForTests();
+        GameSession a = GameSession.start("Delver");
+        for (String line : input) a.runLine(line);
+
+        RandomSource.resetForTests();
+        GameSession b = GameSession.start("Delver");
+        for (String line : input) b.runLine(line);
+
+        assertEquals(a.transcript(), b.transcript(),
+                "Week 7 promised that a recorded session reproduces exactly. Until the turn "
+              + "sequence existed in one place, that depended on which loop replayed it.");
+        assertFalse(a.transcript().isEmpty(), "a transcript of nothing proves nothing");
+    }
+
+    @Test
+    void theDiagnosticWorldAndThePlayWorldAgree() {
+        RandomSource.resetForTests();
+        int reportMonsters = GameSession.buildWorldOnly("Delver").totalMonsters();
+        RandomSource.resetForTests();
+        int playMonsters = GameSession.start("Delver").getWorld().totalMonsters();
+        assertEquals(reportMonsters, playMonsters,
+                "--report must describe the dungeon you actually play in");
     }
 
     // ===================== US-8.5 : the carry-over =====================
@@ -299,6 +329,6 @@ class AdapterFacadeTest {
     /** Strips comments, so prose about a thing can never make an absence assertion pass or fail. */
     private static String codeOnly(String source) {
         return source.replaceAll("(?s)/\\*.*?\\*/", "")
-                .replaceAll("(?m)//.*$", "");
+                     .replaceAll("(?m)//.*$", "");
     }
 }

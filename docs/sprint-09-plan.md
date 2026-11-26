@@ -23,7 +23,7 @@
 | Sprint 6 (Wk 8) | 12 | ____ |
 | Sprint 7 (Wk 9) | 11 | ____ |
 | Sprint 8 (Wk 10) | 12 | ____ |
-| **Sprint 9 (Wk 12)** | **10** | ____ |
+| **Sprint 9 (Wk 12)** | **10** | __10__ |
 
 **Six sprints, six empty Completed columns.** "Capacity ~10" has been a guess since Week 5 and
 nothing has ever checked it. This sprint commits **exactly** 10 for the first time, which makes
@@ -429,12 +429,12 @@ different games.
 
 | Story | Estimated | Actual hours | High, low, about right? |
 |---|---|---|---|
-| **US-8.5** (carry-over) | **1** | | |
-| US-9.1 | 3 | | |
-| US-9.2 | 4 | | |
-| US-9.3 | 2 | | |
+| **US-8.5** (carry-over) | **1** |2 |low |
+| US-9.1 | 3 | 5| low|
+| US-9.2 | 4 | 6| low|
+| US-9.3 | 2 | 2| about right|
 
-**Points completed:** ____ · **Running velocity:** ____
+**Points completed:** __10__ · **Running velocity:** ____
 
 **This is the sixth sprint with an empty Completed column.** Fill this one in, and fill in
 Sprint 8's while the commits are still fresh. Three weeks of real numbers beats six months of
@@ -442,8 +442,15 @@ Sprint 8's while the commits are still fresh. Three weeks of real numbers beats 
 
 ## Sprint Review — one sentence
 
+I enjoyed this sprint as it had patterns that I think definitely have use in real application, I see the absolute need 
+for adapters as codebases get updates and different codebases need to interface together.
+
 ## Retro — one thing to keep, one thing to change
 
 **And one specific question this week:** Adapter and Facade are both "a class that stands in
 front of other classes." In one sentence each, say what made them different in practice —
 not in the book.
+
+Adapter - This pattern works between exactly two kinds of interfaces to allow the first to pass as the second, keeping consistent behavior depending on context.
+
+Facade - This pattern works between the client code and all the subsystems it wants to call on, by reducing the call to the subsystem classes to one and having the facade deal with getting the subsystems to all answer to it. 

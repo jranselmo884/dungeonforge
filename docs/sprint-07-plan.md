@@ -332,13 +332,13 @@ counted.
 
 | Story | Estimated | Actual hours | High, low, about right? |
 |---|---|---|---|
-| US-6.7 | 1 | | |
-| US-7.1 | 4 | | |
-| US-7.2 | 3 | | |
-| US-7.3 | 1 | | |
-| US-7.4 | 2 | | |
+| US-6.7 | 1 |2 |low |
+| US-7.1 | 4 | 7| low|
+| US-7.2 | 3 | 3| about right|
+| US-7.3 | 1 | 1| about right|
+| US-7.4 | 2 | 2| about right|
 
-**Points completed:** ____ · **Running velocity:** ____
+**Points completed:** __11__ · **Running velocity:** ____
 
 ## Sprint Review — one sentence
 
